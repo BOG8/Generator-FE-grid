@@ -107,11 +107,30 @@ void EllipsoidGenerator::createMainInternalNodes() {
 	}
 }
 
+void EllipsoidGenerator::reflectByAxisY() {
+	int thetaIndex = thetaLevel + 1;
+	int phiIndex = phiLevel + 1;
+	int internalIndex = internalLevel + 1;
+
+	for (int i = 0; i < thetaIndex; i++) {
+		int reflectPhiIndex = phiIndex * 2;
+		for (int j = 0; j < phiIndex; j++) {
+			for (int k = 0; k < internalIndex; k++) {
+				Node node = arrayOfNodes[i][j][k];
+				node.x = -node.x;
+				arrayOfNodes[i][reflectPhiIndex][k] = node;
+			}
+			reflectPhiIndex--;
+		}
+	}
+}
+
 void EllipsoidGenerator::createAllNodes() {
 	allocateMemory();
 	fillVectors();
 	createMainExternalNodes();
 	createMainInternalNodes();
+	reflectByAxisY();
 
 	//TODO: Create other nodes.
 

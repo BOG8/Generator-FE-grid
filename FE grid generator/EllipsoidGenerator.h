@@ -27,5 +27,6 @@ private:
 	void fillVectors();
 	void createMainExternalNodes();
 	void createMainInternalNodes();
+	void reflectByAxisY();
 	void printNodes();
 };
