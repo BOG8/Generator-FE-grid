@@ -10,7 +10,7 @@ ProcessManager::~ProcessManager() {
 
 void ProcessManager::runEllipsoidGenerator() {
 	ellipsoidGenerator.loadEllipsoidProperties(ELLIPSOID_PROPERTIES);
-	ellipsoidGenerator.createExternalNodes();
+	ellipsoidGenerator.createAllNodes();
 }
 
 void ProcessManager::run() {

@@ -20,11 +20,12 @@ public:
 	~EllipsoidGenerator();
 
 	void loadEllipsoidProperties(string fileName);
-	void createExternalNodes();
+	void createAllNodes();
 
 private:
 	void allocateMemory();
 	void fillVectors();
 	void createMainExternalNodes();
+	void createMainInternalNodes();
 	void printNodes();
 };

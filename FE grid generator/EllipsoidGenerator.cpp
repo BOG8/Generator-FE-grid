@@ -71,12 +71,47 @@ void EllipsoidGenerator::createMainExternalNodes() {
 			arrayOfNodes[i][j][0].z = cos(thetaValues[i]);
 		}
 	}
+
+	for (int j = 0; j < phiIndex; j++) {
+		arrayOfNodes[thetaIndex - 1][j][0].z = 0;
+	}
+
+	for (int i = 0; i < thetaIndex; i++) {
+		arrayOfNodes[i][phiIndex - 1][0].x = 0;
+	}
 }
 
-void EllipsoidGenerator::createExternalNodes() {
+void EllipsoidGenerator::createMainInternalNodes() {
+	int parts = internalLevel + 1;
+	int thetaIndex = thetaLevel + 1;
+	int phiIndex = phiLevel + 2;
+	for (int i = 0; i < thetaIndex; i++) {
+		for (int j = 0; j < phiIndex; j++) {
+			Node externalNode = arrayOfNodes[i][j][0];
+			double x = 0;
+			double y = 0;
+			double z = 0;
+			double xStep = externalNode.x / parts;
+			double yStep = externalNode.y / parts;
+			double zStep = externalNode.z / parts;
+
+			for (int k = internalLevel; k > 0; k--) {
+				x = x + xStep;
+				y = y + yStep;
+				z = z + zStep;
+				arrayOfNodes[i][j][k].x = x;
+				arrayOfNodes[i][j][k].y = y;
+				arrayOfNodes[i][j][k].z = z;
+			}
+		}
+	}
+}
+
+void EllipsoidGenerator::createAllNodes() {
 	allocateMemory();
 	fillVectors();
 	createMainExternalNodes();
+	createMainInternalNodes();
 
 	//TODO: Create other nodes.
 
