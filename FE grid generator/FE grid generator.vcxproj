@@ -76,6 +76,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EllipsoidGenerator.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="ProcessManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="EllipsoidProperties.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EllipsoidGenerator.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ProcessManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
