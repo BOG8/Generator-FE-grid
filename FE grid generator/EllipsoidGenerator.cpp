@@ -20,7 +20,7 @@ void EllipsoidGenerator::loadEllipsoidProperties(string fileName) {
 	if (!file) {
 		cout << "EllipsoidGenerator: File couldn't be open";
 	} else {
-		file >> a >> b >> c >> r;
+		file >> a >> b >> c;
 		file >> thetaLevel >> phiLevel >> internalLevel;
 	}
 
@@ -66,9 +66,10 @@ void EllipsoidGenerator::createMainExternalNodes() {
 	int phiIndex = phiLevel + 2;
 	for (int i = 0; i < thetaIndex; i++) {
 		for (int j = 0; j < phiIndex; j++) {
-			arrayOfNodes[i][j][0].x = sin(thetaValues[i]) * cos(phiValues[j]);
-			arrayOfNodes[i][j][0].y = sin(thetaValues[i]) * sin(phiValues[j]);
-			arrayOfNodes[i][j][0].z = cos(thetaValues[i]);
+			double thetaSin = sin(thetaValues[i]);
+			arrayOfNodes[i][j][0].x = a * thetaSin * cos(phiValues[j]);
+			arrayOfNodes[i][j][0].y = b * thetaSin * sin(phiValues[j]);
+			arrayOfNodes[i][j][0].z = c * cos(thetaValues[i]);
 		}
 	}
 
