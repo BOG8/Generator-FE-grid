@@ -29,5 +29,6 @@ private:
 	void createMainInternalNodes();
 	void reflectByAxisX();
 	void reflectByAxisY();
+	void reflectByAxisZ();
 	void printNodes();
 };
