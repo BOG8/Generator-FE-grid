@@ -1,4 +1,4 @@
-#include "Node.h"
+#include "Triangle.h"
 #include <string>
 #include <vector>
 
@@ -15,6 +15,7 @@ class EllipsoidGenerator {
 	vector<double> phiValues;
 	Node *** arrayOfNodes;
 	vector<Node> axisZNodes;
+	vector<Triangle> externalGrid;
 
 public:
 	EllipsoidGenerator();
@@ -22,6 +23,7 @@ public:
 
 	void loadEllipsoidProperties(string fileName);
 	void createAllNodes();
+	void createExternalGrid();
 
 private:
 	void allocateMemory();
@@ -34,4 +36,7 @@ private:
 	void createAxisZNodes();
 	void numberNodes();
 	void printNodes();
+
+	void createExternalGridTopConnections(int phiIndex);
+	void createExternalGridTop();
 };

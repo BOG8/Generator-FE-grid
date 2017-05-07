@@ -79,6 +79,7 @@
     <ClInclude Include="EllipsoidGenerator.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="ProcessManager.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="EllipsoidProperties.txt" />

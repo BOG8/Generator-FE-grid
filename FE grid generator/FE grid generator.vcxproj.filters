@@ -24,6 +24,9 @@
     <ClInclude Include="ProcessManager.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="EllipsoidProperties.txt">
