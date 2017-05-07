@@ -13,6 +13,7 @@ class EllipsoidGenerator {
 	vector<double> thetaValues;
 	vector<double> phiValues;
 	Node *** arrayOfNodes;
+	vector<Node> axisZNodes;
 
 public:
 	EllipsoidGenerator();
@@ -29,5 +30,6 @@ private:
 	void reflectByAxisX();
 	void reflectByAxisY();
 	void reflectByAxisZ();
+	void createAxisZNodes();
 	void printNodes();
 };

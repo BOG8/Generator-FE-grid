@@ -161,6 +161,28 @@ void EllipsoidGenerator::reflectByAxisZ() {
 	}
 }
 
+void EllipsoidGenerator::createAxisZNodes() {
+	Node node;
+	node.x = 0;
+	node.y = 0;
+	node.z = c;
+	axisZNodes.push_back(node);
+
+	int part = internalLevel + 1;
+	double zStep = c / part;
+	for (int i = 0; i < internalLevel; i++) {
+		node.z = node.z - zStep;
+		axisZNodes.push_back(node);
+	}
+	node.z = 0;
+	axisZNodes.push_back(node);
+
+	for (int i = internalLevel; i >= 0; i--) {
+		node.z = -axisZNodes[i].z;
+		axisZNodes.push_back(node);
+	}
+}
+
 void EllipsoidGenerator::createAllNodes() {
 	allocateMemory();
 	fillVectors();
@@ -169,7 +191,7 @@ void EllipsoidGenerator::createAllNodes() {
 	reflectByAxisX();
 	reflectByAxisY();
 	reflectByAxisZ();
-
+	createAxisZNodes();
 	//TODO: Create other nodes.
 
 	printNodes();
@@ -189,5 +211,11 @@ void EllipsoidGenerator::printNodes() {
 			cout << '\n';
 		}
 		cout << "\n\n\n";
+	}
+
+	int size = axisZNodes.size();
+	for (int i = 0; i < size; i++) {
+		Node node = axisZNodes[i];
+		cout << node.x << ' ' << node.y << ' ' << node.z << '\n';
 	}
 }
