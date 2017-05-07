@@ -9,6 +9,7 @@ const double PI = 3.1415926535897932384626433832795;
 class EllipsoidGenerator {
 	double a, b, c;
 	int thetaLevel, phiLevel, internalLevel;
+	int maxNumber;
 
 	vector<double> thetaValues;
 	vector<double> phiValues;
@@ -31,5 +32,6 @@ private:
 	void reflectByAxisY();
 	void reflectByAxisZ();
 	void createAxisZNodes();
+	void numberNodes();
 	void printNodes();
 };

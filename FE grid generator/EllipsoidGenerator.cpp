@@ -183,6 +183,28 @@ void EllipsoidGenerator::createAxisZNodes() {
 	}
 }
 
+void EllipsoidGenerator::numberNodes() {
+	int thetaIndex = 2 * thetaLevel + 1;
+	int phiIndex = (phiLevel + 1) * 4;
+	int internalIndex = internalLevel + 1;
+
+	for (int k = 0; k < internalIndex; k++) {
+		for (int i = 0; i < thetaIndex; i++) {
+			for (int j = 0; j < phiIndex; j++) {
+				arrayOfNodes[i][j][k].number  = (k * thetaIndex * phiIndex) + (i * phiIndex) + j + 1;
+			}
+		}
+	}
+
+	int axisZNumber = thetaIndex * phiIndex * internalIndex;
+	int size = axisZNodes.size();
+	for (int i = 0; i < size; i++) {
+		axisZNumber++;
+		axisZNodes[i].number = axisZNumber;
+	}
+	maxNumber = axisZNumber;
+}
+
 void EllipsoidGenerator::createAllNodes() {
 	allocateMemory();
 	fillVectors();
@@ -192,8 +214,7 @@ void EllipsoidGenerator::createAllNodes() {
 	reflectByAxisY();
 	reflectByAxisZ();
 	createAxisZNodes();
-	//TODO: Create other nodes.
-
+	numberNodes();
 	printNodes();
 }
 
@@ -206,7 +227,7 @@ void EllipsoidGenerator::printNodes() {
 		for (int i = 0; i < thetaIndex; i++) {
 			for (int j = 0; j < phiIndex; j++) {
 				Node node = arrayOfNodes[i][j][k];
-				cout << node.x << ' ' << node.y << ' ' << node.z << '\n';
+				cout << node.number << "   " << node.x << ' ' << node.y << ' ' << node.z << '\n';
 			}
 			cout << '\n';
 		}
@@ -216,6 +237,6 @@ void EllipsoidGenerator::printNodes() {
 	int size = axisZNodes.size();
 	for (int i = 0; i < size; i++) {
 		Node node = axisZNodes[i];
-		cout << node.x << ' ' << node.y << ' ' << node.z << '\n';
+		cout << node.number << "   " << node.x << ' ' << node.y << ' ' << node.z << '\n';
 	}
 }
