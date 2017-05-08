@@ -374,6 +374,25 @@ void EllipsoidGenerator::createExternalGrid() {
 	createExternalGridBottom();
 }
 
+void EllipsoidGenerator::createInitialTriangulation() {
+	int size = externalGrid.size();
+	Tetrahedron tetrahedron;
+	for (int i = 1; i < size; i++) {
+		tetrahedrons.push_back(tetrahedron);
+	}
+
+	for (int i = 1; i < size; i++) {
+		Triangle triangle = externalGrid[i];
+		list<Tetrahedron>::iterator firstTetrahedron = tetrahedrons.begin();
+
+		// TODO: Create initial tetrahedrons.
+	}
+}
+
+void EllipsoidGenerator::createTriangulation() {
+	createInitialTriangulation();
+}
+
 void EllipsoidGenerator::printNodes() {
 	int thetaIndex = 2 * thetaLevel + 1;
 	int phiIndex = (phiLevel + 1) * 4;

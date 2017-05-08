@@ -1,6 +1,8 @@
 #include "Triangle.h"
+#include "Tetrahedron.h"
 #include <string>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -16,6 +18,7 @@ class EllipsoidGenerator {
 	Node *** arrayOfNodes;
 	vector<Node> axisZNodes;
 	vector<Triangle> externalGrid;
+	list<Tetrahedron> tetrahedrons;
 
 public:
 	EllipsoidGenerator();
@@ -24,6 +27,7 @@ public:
 	void loadEllipsoidProperties(string fileName);
 	void createAllNodes();
 	void createExternalGrid();
+	void createTriangulation();
 
 private:
 	void allocateMemory();
@@ -43,4 +47,6 @@ private:
 	void createExternalGridMiddle();
 	void createExternalGridBottomConnections(int thetaIndex, int phiIndex);
 	void createExternalGridBottom();
+
+	void createInitialTriangulation();
 };
