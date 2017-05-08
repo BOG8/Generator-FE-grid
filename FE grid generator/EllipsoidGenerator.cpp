@@ -220,17 +220,17 @@ void EllipsoidGenerator::createAllNodes() {
 
 void EllipsoidGenerator::createExternalGridTopConnections(int phiIndex) {
 	externalGrid[1].neighbour.push_back(phiIndex);
-	externalGrid[1].neighbour.push_back(1 + phiIndex);
+	externalGrid[1].neighbour.push_back(phiIndex + 2);
 	externalGrid[1].neighbour.push_back(2);
 
-	for (int i = 2; i <= phiIndex; i++) {
+	for (int i = 2; i < phiIndex; i++) {
 		externalGrid[i].neighbour.push_back(i - 1);
-		externalGrid[i].neighbour.push_back(i + phiIndex);
+		externalGrid[i].neighbour.push_back(i * 2 + phiIndex);
 		externalGrid[i].neighbour.push_back(i + 1);
 	}
 
 	externalGrid[phiIndex].neighbour.push_back(phiIndex - 1);
-	externalGrid[phiIndex].neighbour.push_back(2 * phiIndex);
+	externalGrid[phiIndex].neighbour.push_back(3 * phiIndex);
 	externalGrid[phiIndex].neighbour.push_back(1);
 }
 
