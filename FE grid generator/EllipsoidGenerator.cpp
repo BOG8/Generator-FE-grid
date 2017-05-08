@@ -260,8 +260,78 @@ void EllipsoidGenerator::createExternalGridTop() {
 	createExternalGridTopConnections(phiIndex);
 }
 
+void EllipsoidGenerator::createExternalGridMiddleConnections(int thetaIndex, int phiIndex) {
+	int doublePhiIndex = 2 * phiIndex;
+	for (int i = 0; i < thetaIndex - 1; i++) {
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex);
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back((i + 1) * doublePhiIndex + phiIndex + 2);
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back(i * doublePhiIndex + phiIndex + 2);
+
+		for (int j = 2; j < doublePhiIndex; j++) {
+			int number = i * doublePhiIndex + phiIndex + j;
+			if (number % 2 == 0) {
+				externalGrid[number].neighbour.push_back(number - 1);
+				externalGrid[number].neighbour.push_back(number + 1);
+				externalGrid[number].neighbour.push_back(number - doublePhiIndex - 1);
+			} else {
+				externalGrid[number].neighbour.push_back(number - 1);
+				externalGrid[number].neighbour.push_back(number + doublePhiIndex + 1);
+				externalGrid[number].neighbour.push_back(number + 1);
+			}
+		}
+
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex - 1);
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back(i * doublePhiIndex + phiIndex + 1);
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back((i - 1) * doublePhiIndex + phiIndex + doublePhiIndex - 1);
+	}
+
+	for (int i = phiIndex + 2; i <= phiIndex + doublePhiIndex; i = i + 2) {
+		externalGrid[i].neighbour[2] = (i - phiIndex) / 2;
+	}
+	int tempIndex = phiIndex + (thetaIndex - 1) * doublePhiIndex;
+	for (int i = phiIndex + (thetaIndex - 2) * doublePhiIndex + 1; i <= phiIndex + (thetaIndex - 1) * doublePhiIndex; i = i + 2) {
+		tempIndex++;
+		externalGrid[i].neighbour[1] = (tempIndex);
+	}
+}
+
+void EllipsoidGenerator::createExternalGridMiddle() {
+	int thetaIndex = 2 * thetaLevel + 1;
+	int phiIndex = (phiLevel + 1) * 4;
+
+	for (int i = 0; i < thetaIndex - 1; i++) {
+		for (int j = 0; j < phiIndex - 1; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(i * phiIndex + j + 1);
+			triangleOne.nodesNumbers.push_back((i + 1) * phiIndex + j + 1);
+			triangleOne.nodesNumbers.push_back((i + 1) * phiIndex + j + 2);
+			externalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(i * phiIndex + j + 1);
+			triangleTwo.nodesNumbers.push_back((i + 1) * phiIndex + j + 2);
+			triangleTwo.nodesNumbers.push_back(i * phiIndex + j + 2);
+			externalGrid.push_back(triangleTwo);
+		}
+		Triangle triangleOne;
+		triangleOne.nodesNumbers.push_back(i * phiIndex + phiIndex);
+		triangleOne.nodesNumbers.push_back((i + 1) * phiIndex + phiIndex);
+		triangleOne.nodesNumbers.push_back((i + 1) * phiIndex + 1);
+		externalGrid.push_back(triangleOne);
+
+		Triangle triangleTwo;
+		triangleTwo.nodesNumbers.push_back(i * phiIndex + phiIndex);
+		triangleTwo.nodesNumbers.push_back((i + 1) * phiIndex + 1);
+		triangleTwo.nodesNumbers.push_back(i * phiIndex + 1);
+		externalGrid.push_back(triangleTwo);
+	}
+
+	createExternalGridMiddleConnections(thetaIndex, phiIndex);
+}
+
 void EllipsoidGenerator::createExternalGrid() {
 	createExternalGridTop();
+	createExternalGridMiddle();
 }
 
 void EllipsoidGenerator::printNodes() {

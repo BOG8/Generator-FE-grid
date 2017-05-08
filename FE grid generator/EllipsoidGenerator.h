@@ -39,4 +39,6 @@ private:
 
 	void createExternalGridTopConnections(int phiIndex);
 	void createExternalGridTop();
+	void createExternalGridMiddleConnections(int thetaIndex, int phiIndex);
+	void createExternalGridMiddle();
 };
