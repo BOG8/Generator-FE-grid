@@ -239,19 +239,16 @@ void EllipsoidGenerator::createExternalGridTop() {
 	int topNumber = axisZNodes[0].number;
 
 	Triangle emptyTriangle;
-	emptyTriangle.number = -1;
 	externalGrid.push_back(emptyTriangle);
 
 	for (int i = 1; i < phiIndex; i++) {
 		Triangle triangle;
-		triangle.number = i;
 		triangle.nodesNumbers.push_back(topNumber);
 		triangle.nodesNumbers.push_back(i);
 		triangle.nodesNumbers.push_back(i + 1);
 		externalGrid.push_back(triangle);
 	}
 	Triangle triangle;
-	triangle.number = phiIndex;
 	triangle.nodesNumbers.push_back(topNumber);
 	triangle.nodesNumbers.push_back(phiIndex);
 	triangle.nodesNumbers.push_back(1);
