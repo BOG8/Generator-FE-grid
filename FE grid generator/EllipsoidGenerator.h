@@ -20,6 +20,8 @@ class EllipsoidGenerator {
 	vector<Node> axisZNodes;
 	vector<Triangle> externalGrid;
 	list<Tetrahedron> tetrahedrons;
+	vector<Node> internalNodes;
+	vector<Node> nodes;
 
 public:
 	EllipsoidGenerator();
@@ -50,4 +52,8 @@ private:
 	void createExternalGridBottom();
 
 	void createInitialTriangulation();
+	void transferInternalNodes();
+	void transferAllNodes();
+	int getStatusOfAccessoryToTetrahedron(Node node, Tetrahedron tetrahedron);
+	void addInternalNodesToTriangulation();
 };

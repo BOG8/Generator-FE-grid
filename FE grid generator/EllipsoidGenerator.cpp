@@ -403,8 +403,111 @@ void EllipsoidGenerator::createInitialTriangulation() {
 	}
 }
 
+void EllipsoidGenerator::transferInternalNodes() {
+	int thetaIndex = 2 * thetaLevel + 1;
+	int phiIndex = (phiLevel + 1) * 4;
+	int internalIndex = internalLevel + 1;
+	int topIndex = 0;
+	int bottomIndex = 2 * (internalLevel + 1);
+
+	for (int k = 1; k < internalIndex; k++) {
+		for (int i = 0; i < thetaIndex; i++) {
+			for (int j = 0; j < phiIndex; j++) {
+				internalNodes.push_back(arrayOfNodes[i][j][k]);
+			}
+		}
+
+		topIndex++;
+		internalNodes.push_back(axisZNodes[topIndex]);
+		bottomIndex--;
+		internalNodes.push_back(axisZNodes[bottomIndex]);
+	}
+}
+
+void EllipsoidGenerator::transferAllNodes() {
+	int thetaIndex = 2 * thetaLevel + 1;
+	int phiIndex = (phiLevel + 1) * 4;
+	int internalIndex = internalLevel + 1;
+	Node node;
+	nodes.push_back(node);
+	for (int k = 0; k < internalIndex; k++) {
+		for (int i = 0; i < thetaIndex; i++) {
+			for (int j = 0; j < phiIndex; j++) {
+				nodes.push_back(arrayOfNodes[i][j][k]);
+			}
+		}
+	}
+
+	int axisZNumber = thetaIndex * phiIndex * internalIndex;
+	int size = axisZNodes.size();
+	for (int i = 0; i < size; i++) {
+		axisZNumber++;
+		nodes.push_back(axisZNodes[i]);
+	}
+}
+
+int EllipsoidGenerator::getStatusOfAccessoryToTetrahedron(Node node, Tetrahedron tetrahedron) {
+	for (int i = 1; i < 4; i++) {
+		Node topNode = nodes[tetrahedron.nodesNumbers[0]];
+		Node basisNode = nodes[tetrahedron.nodesNumbers[i]];
+		double XNumerator = node.x - topNode.x;
+		double YNumerator = node.y - topNode.y;
+		double ZNumerator = node.z - topNode.z;
+		double XDenominator = basisNode.x - topNode.x;
+		double YDenominator = basisNode.y - topNode.y;
+		double ZDenominator = basisNode.z - topNode.z;
+
+		vector<double> compare;
+		if (abs(XNumerator) > 0.00000001 || abs(XDenominator) > 0.00000001) {
+			compare.push_back(XNumerator / XDenominator);
+		}
+		if (abs(YNumerator) > 0.00000001 || abs(YDenominator) > 0.00000001) {
+			compare.push_back(YNumerator / YDenominator);
+		}
+		if (abs(ZNumerator) > 0.00000001 || abs(ZDenominator) > 0.00000001) {
+			compare.push_back(ZNumerator / ZDenominator);
+		}
+
+		if (compare.size() == 1 && compare[0] > 0) {
+			return i;
+		} else if (compare.size() > 1) {
+			bool isEqual = true;
+			int size = compare.size();
+			for (int j = 1; j < size; j++) {
+				if (abs(compare[j] - compare[j - 1]) > 0.00000001 || compare[j] < 0) {
+					isEqual = false;
+				}
+			}
+			if (isEqual) {
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+void EllipsoidGenerator::addInternalNodesToTriangulation() {
+	int size = internalNodes.size();
+	for (int i = 0; i < size; i++) {
+		list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+		list<Tetrahedron>::iterator end = tetrahedrons.end();
+		while (currentTetrahedron != end) {
+			int status = getStatusOfAccessoryToTetrahedron(internalNodes[i], *currentTetrahedron);
+			if (status != -1) {
+
+			}
+
+			currentTetrahedron++;
+		}
+	}
+}
+
 void EllipsoidGenerator::createTriangulation() {
 	createInitialTriangulation();
+	transferInternalNodes();
+	transferAllNodes();
+	addInternalNodesToTriangulation();
 }
 
 void EllipsoidGenerator::printNodes() {
