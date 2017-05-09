@@ -372,17 +372,34 @@ void EllipsoidGenerator::createExternalGrid() {
 }
 
 void EllipsoidGenerator::createInitialTriangulation() {
+	int centralNodeNumber = axisZNodes[internalLevel + 1].number;
 	int size = externalGrid.size();
-	Tetrahedron tetrahedron;
 	for (int i = 1; i < size; i++) {
+		Tetrahedron tetrahedron;
+		tetrahedron.nodesNumbers.push_back(centralNodeNumber);
+		for (int j = 0; j < 3; j++) {
+			tetrahedron.nodesNumbers.push_back(externalGrid[i].nodesNumbers[j]);
+		}
 		tetrahedrons.push_back(tetrahedron);
 	}
 
+	list<Tetrahedron>::iterator iTetrahedron = tetrahedrons.begin();
 	for (int i = 1; i < size; i++) {
-		Triangle triangle = externalGrid[i];
-		list<Tetrahedron>::iterator firstTetrahedron = tetrahedrons.begin();
+		iTetrahedron->neighbour.push_back(0);
+		for (int j = 0; j < 3; j++) {
+			int k = j + 1;
+			if (k == 3) {
+				k = 0;
+			}
 
-		// TODO: Create initial tetrahedrons.
+			list<Tetrahedron>::iterator neighbourTetrahedron = tetrahedrons.begin();
+			int number = externalGrid[i].neighbour[k];
+			for (int n = 1; n < number; n++) {
+				neighbourTetrahedron++;
+			}
+			iTetrahedron->neighbour.push_back(&(*neighbourTetrahedron));
+		}
+		iTetrahedron++;
 	}
 }
 
