@@ -532,3 +532,42 @@ void EllipsoidGenerator::printNodes() {
 		cout << node.number << "   " << node.x << ' ' << node.y << ' ' << node.z << '\n';
 	}
 }
+
+void EllipsoidGenerator::writeNodesInFile(string fileName) {
+	ofstream file(fileName);
+
+	int size = nodes.size();
+	file << size - 1 << " 3\n";
+	for (int i = 1; i < size; i++) {
+		Node node = nodes[i];
+		file << node.x << ' ' << node.y << ' ' << node.z << '\n';
+	}
+
+	file << '\n';
+
+	file.close();
+}
+
+void EllipsoidGenerator::writeTetrahedronsInFile(string fileName) {
+	ofstream file(fileName, ios_base::app);
+
+	file << tetrahedrons.size() << " 4\n";
+
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+	while (currentTetrahedron != end) {
+		file << 2;
+
+		for (int i = 0; i < 4; i++) {
+			file << ' ' << currentTetrahedron->nodesNumbers[i];
+		}
+
+		file << "\n";
+
+		currentTetrahedron++;
+	}
+
+	file << '\n';
+
+	file.close();
+}

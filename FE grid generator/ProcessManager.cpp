@@ -13,6 +13,8 @@ void ProcessManager::runEllipsoidGenerator() {
 	ellipsoidGenerator.createAllNodes();
 	ellipsoidGenerator.createExternalGrid();
 	ellipsoidGenerator.createTriangulation();
+	ellipsoidGenerator.writeNodesInFile(RESULT);
+	ellipsoidGenerator.writeTetrahedronsInFile(RESULT);
 }
 
 void ProcessManager::run() {

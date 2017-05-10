@@ -35,6 +35,9 @@
     <Text Include="EllipsoidProperties.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="Result.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EllipsoidGenerator.cpp">

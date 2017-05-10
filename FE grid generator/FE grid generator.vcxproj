@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="EllipsoidProperties.txt" />
+    <Text Include="Result.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EllipsoidGenerator.cpp" />

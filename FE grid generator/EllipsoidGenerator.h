@@ -31,6 +31,8 @@ public:
 	void createAllNodes();
 	void createExternalGrid();
 	void createTriangulation();
+	void writeNodesInFile(string fileName);
+	void writeTetrahedronsInFile(string fileName);
 
 private:
 	void allocateMemory();
