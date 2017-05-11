@@ -57,5 +57,12 @@ private:
 	void transferInternalNodes();
 	void transferAllNodes();
 	int getStatusOfAccessoryToTetrahedron(Node node, Tetrahedron tetrahedron);
+	int getIncrementedStatus(int status);
+	void fillNeighours(vector<Tetrahedron*> &neighbours, vector<int> &basisRibNodes,
+					   list<Tetrahedron>::iterator currentTetrahedron, int status);
+	void addNewTetrahedronsWithNodes(vector<Tetrahedron*> &neighbours, vector<int> &basisRibNodes, int i);
+	void deleteGarbage();
+
+public:
 	void addInternalNodesToTriangulation();
 };

@@ -487,6 +487,71 @@ int EllipsoidGenerator::getStatusOfAccessoryToTetrahedron(Node node, Tetrahedron
 	return -1;
 }
 
+int EllipsoidGenerator::getIncrementedStatus(int status) {
+	status++;
+	if (status == 4) {
+		return 1;
+	}
+
+	return status;
+}
+
+void EllipsoidGenerator::deleteGarbage() {
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+
+	while (currentTetrahedron != end) {
+		if (currentTetrahedron->neighbour.size() == 0 && currentTetrahedron->nodesNumbers.size() == 0) {
+			tetrahedrons.erase(currentTetrahedron++);
+		} else {
+			currentTetrahedron++;
+		}
+	}
+}
+
+void EllipsoidGenerator::fillNeighours(vector<Tetrahedron*> &neighbours, vector<int> &basisRibNodes, 
+									   list<Tetrahedron>::iterator currentTetrahedron, int status) {
+	neighbours.push_back(&(*currentTetrahedron));
+	basisRibNodes.push_back(status);
+	int nodeNumber = currentTetrahedron->nodesNumbers[status];
+
+	for (int i = 0; i < neighbours.size(); i++) {
+		Tetrahedron* neighbour = neighbours[i]->neighbour[getIncrementedStatus(basisRibNodes[i])];
+		if (neighbours[0] != neighbour) {
+			neighbours.push_back(neighbour);
+			for (int j = 1; j < 4; j++) {
+				if (neighbours[i + 1]->nodesNumbers[j] == nodeNumber) {
+					basisRibNodes.push_back(j);
+				}
+			}
+		}
+	}
+}
+
+void EllipsoidGenerator::addNewTetrahedronsWithNodes(vector<Tetrahedron*> &neighbours, vector<int> &basisRibNodes, int number) {
+	for (int i = 0; i < neighbours.size(); i++) {
+		Tetrahedron tetrahedron;
+		tetrahedron.nodesNumbers.push_back(neighbours[i]->nodesNumbers[0]);
+		tetrahedron.nodesNumbers.push_back(number);
+		int status = getIncrementedStatus(basisRibNodes[i]);
+		tetrahedron.nodesNumbers.push_back(neighbours[i]->nodesNumbers[status]);
+		status = getIncrementedStatus(status);
+		tetrahedron.nodesNumbers.push_back(neighbours[i]->nodesNumbers[status]);
+		tetrahedrons.push_back(tetrahedron);
+	}
+	for (int i = 0; i < neighbours.size(); i++) {
+		Tetrahedron tetrahedron;
+		tetrahedron.nodesNumbers.push_back(number);
+		int status = basisRibNodes[i];
+		tetrahedron.nodesNumbers.push_back(neighbours[i]->nodesNumbers[status]);
+		for (int j = 0; j < 2; j++) {
+			status = getIncrementedStatus(status);
+			tetrahedron.nodesNumbers.push_back(neighbours[i]->nodesNumbers[status]);
+		}
+		tetrahedrons.push_back(tetrahedron);
+	}
+}
+
 void EllipsoidGenerator::addInternalNodesToTriangulation() {
 	int size = internalNodes.size();
 	for (int i = 0; i < size; i++) {
@@ -495,10 +560,94 @@ void EllipsoidGenerator::addInternalNodesToTriangulation() {
 		while (currentTetrahedron != end) {
 			int status = getStatusOfAccessoryToTetrahedron(internalNodes[i], *currentTetrahedron);
 			if (status != -1) {
+				vector<Tetrahedron*> neighbours;
+				vector<int> basisRibNodes;
+				fillNeighours(neighbours, basisRibNodes, currentTetrahedron, status);
+				addNewTetrahedronsWithNodes(neighbours, basisRibNodes, internalNodes[i].number);
 
+				int doubleSize = 2 * neighbours.size();
+				list<Tetrahedron>::iterator newTetrahedron = tetrahedrons.end();
+				for (int j = 0; j < doubleSize; j++) {
+					newTetrahedron--;
+				}
+				list<Tetrahedron>::iterator upFirst = newTetrahedron;
+				list<Tetrahedron>::iterator upLast = upFirst;
+				for (int j = 0; j < neighbours.size() - 1; j++) {
+					upLast++;
+				}
+				list<Tetrahedron>::iterator downFirst = upLast;
+				downFirst++;
+				list<Tetrahedron>::iterator downLast = downFirst;
+				for (int j = 0; j < neighbours.size() - 1; j++) {
+					downLast++;
+				}
+
+				for (int j = 0; j < neighbours.size(); j++) {
+					list<Tetrahedron>::iterator partOfInitialTetrahedron = newTetrahedron;
+					for (int k = 0; k < neighbours.size(); k++) {
+						partOfInitialTetrahedron++;
+					}
+					newTetrahedron->neighbour.push_back(&(*partOfInitialTetrahedron));
+					Tetrahedron* externalTetrahedron = neighbours[j]->neighbour[basisRibNodes[j]];
+					for (int k = 0; k < 4; k++) {
+						if (externalTetrahedron->neighbour[k] == neighbours[j]) {
+							externalTetrahedron->neighbour[k] = &(*newTetrahedron);
+						}
+					}
+					newTetrahedron->neighbour.push_back(externalTetrahedron);
+					list<Tetrahedron>::iterator rightNeighbour = newTetrahedron;
+					rightNeighbour++;
+					newTetrahedron->neighbour.push_back(&(*rightNeighbour));
+					list<Tetrahedron>::iterator leftNeighbour = newTetrahedron;
+					leftNeighbour--;
+					newTetrahedron->neighbour.push_back(&(*leftNeighbour));
+
+					newTetrahedron++;
+				}
+				upFirst->neighbour[3] = &(*upLast);
+				upLast->neighbour[2] = &(*upFirst);
+
+				for (int j = 0; j < neighbours.size(); j++) {
+					Tetrahedron* externalTetrahedron = neighbours[j]->neighbour[0];
+					if (externalTetrahedron != 0) {
+						for (int k = 0; k < 4; k++) {
+							if (externalTetrahedron->neighbour[k] == neighbours[j]) {
+								externalTetrahedron->neighbour[k] = &(*newTetrahedron);
+							}
+						}
+					}
+					newTetrahedron->neighbour.push_back(externalTetrahedron);
+					list<Tetrahedron>::iterator partOfInitialTetrahedron = newTetrahedron;
+					for (int k = 0; k < neighbours.size(); k++) {
+						partOfInitialTetrahedron--;
+					}
+					newTetrahedron->neighbour.push_back(&(*partOfInitialTetrahedron));
+					list<Tetrahedron>::iterator rightNeighbour = newTetrahedron;
+					rightNeighbour++;
+					if (rightNeighbour != end) {
+						newTetrahedron->neighbour.push_back(&(*rightNeighbour));
+					} else {
+						newTetrahedron->neighbour.push_back(0);
+					}
+					list<Tetrahedron>::iterator leftNeighbour = newTetrahedron;
+					leftNeighbour--;
+					newTetrahedron->neighbour.push_back(&(*leftNeighbour));
+
+					newTetrahedron++;
+				}
+				downFirst->neighbour[3] = &(*downLast);
+				downLast->neighbour[2] = &(*downFirst);
+
+				for (int j = 0; j < neighbours.size(); j++) {
+					neighbours[j]->nodesNumbers.clear();
+					neighbours[j]->neighbour.clear();
+				}
+
+				deleteGarbage();
+				currentTetrahedron = end;
+			} else {
+				currentTetrahedron++;
 			}
-
-			currentTetrahedron++;
 		}
 	}
 }
