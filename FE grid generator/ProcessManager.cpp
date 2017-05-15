@@ -18,6 +18,11 @@ void ProcessManager::runEllipsoidGenerator() {
 	ellipsoidGenerator.writeGidFile();
 }
 
+void ProcessManager::runParallelepipedGenerator() {
+	parallelepipedGenerator.setMinNumber(ellipsoidGenerator.getMaxNumber());
+}
+
 void ProcessManager::run() {
 	runEllipsoidGenerator();
+	runParallelepipedGenerator();
 }

@@ -1,10 +1,12 @@
 #include "EllipsoidGenerator.h"
+#include "ParallelepipedGenerator.h"
 
 const string ELLIPSOID_PROPERTIES = "EllipsoidProperties.txt";
 const string RESULT = "Result.txt";
 
 class ProcessManager {
 	EllipsoidGenerator ellipsoidGenerator;
+	ParallelepipedGenerator parallelepipedGenerator;
 
 public:
 	ProcessManager();
@@ -14,4 +16,5 @@ public:
 
 private:
 	void runEllipsoidGenerator();
+	void runParallelepipedGenerator();
 };

@@ -772,3 +772,7 @@ void EllipsoidGenerator::writeGidFile() {
 
 	file.close();
 }
+
+int EllipsoidGenerator::getMaxNumber() {
+	return maxNumber;
+}
