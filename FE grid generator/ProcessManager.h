@@ -2,6 +2,7 @@
 #include "ParallelepipedGenerator.h"
 
 const string ELLIPSOID_PROPERTIES = "EllipsoidProperties.txt";
+const string PARALLELEPIPED_PROPERTIES = "ParallelepipedProperties.txt";
 const string RESULT = "Result.txt";
 
 class ProcessManager {

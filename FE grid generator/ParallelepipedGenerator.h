@@ -1,4 +1,10 @@
+#include <string>
+
+using namespace std;
+
 class ParallelepipedGenerator {
+	double x, y, z;
+	double xStep, yStep, zStep;
 	int minNumber;
 
 public:
@@ -6,4 +12,5 @@ public:
 	~ParallelepipedGenerator();
 
 	void setMinNumber(int number);
+	void loadEllipsoidProperties(string fileName);
 };

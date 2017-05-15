@@ -41,6 +41,9 @@
     <Text Include="Result.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="ParallelepipedProperties.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EllipsoidGenerator.cpp">
