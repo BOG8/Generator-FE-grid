@@ -33,6 +33,7 @@ public:
 	void createTriangulation();
 	void writeNodesInFile(string fileName);
 	void writeTetrahedronsInFile(string fileName);
+	void writeGidFile();
 
 private:
 	void allocateMemory();

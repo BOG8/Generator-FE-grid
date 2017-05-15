@@ -720,3 +720,30 @@ void EllipsoidGenerator::writeTetrahedronsInFile(string fileName) {
 
 	file.close();
 }
+
+void EllipsoidGenerator::writeGidFile() {
+	ofstream file("GidResult.txt");
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+	file << "mesh dimension = 3 elemtype tetrahedra nnode = 4\ncoordinates\n";
+	for (int i = 1; i < nodes.size(); i++) {
+		Node node = nodes[i];
+		file << node.number << " " << node.x << ' ' << node.y << ' ' << node.z << '\n';
+	}
+	file << "end coordinates\nelements\n";
+	int number = 0;
+	while (currentTetrahedron != end) {
+		number++;
+		file << number;
+		for (int i = 0; i < 4; i++) {
+			file << ' ' << currentTetrahedron->nodesNumbers[i];
+		}
+
+		file << " 1\n";
+
+		currentTetrahedron++;
+	}
+	file << "end elements";
+
+	file.close();
+}

@@ -15,6 +15,7 @@ void ProcessManager::runEllipsoidGenerator() {
 	ellipsoidGenerator.createTriangulation();
 	ellipsoidGenerator.writeNodesInFile(RESULT);
 	ellipsoidGenerator.writeTetrahedronsInFile(RESULT);
+	ellipsoidGenerator.writeGidFile();
 }
 
 void ProcessManager::run() {
