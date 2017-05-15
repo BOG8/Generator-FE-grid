@@ -27,3 +27,15 @@ void ParallelepipedGenerator::loadEllipsoidProperties(string fileName) {
 
 	file.close();
 }
+
+void ParallelepipedGenerator::correctStep(double &x, double &xStep, int &xStepsNumber) {
+	double quotient = x / xStep;
+	xStepsNumber = rint(quotient);
+	xStep = x / xStepsNumber;
+}
+
+void ParallelepipedGenerator::correctAllSteps() {
+	correctStep(x, xStep, xStepsNumber);
+	correctStep(y, yStep, yStepsNumber);
+	correctStep(z, zStep, zStepsNumber);
+}
