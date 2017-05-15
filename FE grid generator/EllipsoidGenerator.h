@@ -10,6 +10,7 @@ using namespace std;
 const double PI = 3.1415926535897932384626433832795;
 
 class EllipsoidGenerator {
+	double x, y, z;
 	double a, b, c;
 	int thetaLevel, phiLevel, internalLevel;
 	int maxNumber;
@@ -44,6 +45,7 @@ private:
 	void reflectByAxisY();
 	void reflectByAxisZ();
 	void createAxisZNodes();
+	void moveByCenter();
 	void numberNodes();
 	void printNodes();
 
