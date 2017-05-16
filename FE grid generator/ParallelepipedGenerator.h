@@ -15,6 +15,7 @@ class ParallelepipedGenerator {
 	EllipsoidGenerator ellipsoidGenerator;
 	Node ***arrayOfNodes;
 	vector<Triangle> internalGrid;
+	vector<Node> nodes;
 
 public:
 	ParallelepipedGenerator();
@@ -24,6 +25,7 @@ public:
 	void loadEllipsoidProperties(string fileName);
 	void correctAllSteps();
 	void createNodes(string fileName);
+	void transferAllNodes();
 	void createInternalGrid();
 
 private:

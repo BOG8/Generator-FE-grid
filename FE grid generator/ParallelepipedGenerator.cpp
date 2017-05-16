@@ -97,6 +97,24 @@ void ParallelepipedGenerator::printNodesNumbers() {
 	}
 }
 
+void ParallelepipedGenerator::transferAllNodes() {
+	Node emptyNode;
+	emptyNode.number = minNumber;
+	nodes.push_back(emptyNode);
+
+	for (int k = 0; k <= zStepsNumber; k++) {
+		for (int j = 0; j <= yStepsNumber; j++) {
+			for (int i = 0; i <= xStepsNumber; i++) {
+				Node node;
+				node = arrayOfNodes[i][j][k];
+				if (node.number != -1) {
+					nodes.push_back(node);
+				}
+			}
+		}
+	}
+}
+
 //void ParallelepipedGenerator::createInternalGrid() {
 //	Triangle emptyTriangle;
 //	internalGrid.push_back(emptyTriangle);

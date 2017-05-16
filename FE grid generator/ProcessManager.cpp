@@ -23,6 +23,7 @@ void ProcessManager::runParallelepipedGenerator() {
 	parallelepipedGenerator.loadEllipsoidProperties(PARALLELEPIPED_PROPERTIES);
 	parallelepipedGenerator.correctAllSteps();
 	parallelepipedGenerator.createNodes(ELLIPSOID_PROPERTIES);
+	parallelepipedGenerator.transferAllNodes();
 }
 
 void ProcessManager::run() {
