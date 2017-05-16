@@ -115,14 +115,126 @@ void ParallelepipedGenerator::transferAllNodes() {
 	}
 }
 
-//void ParallelepipedGenerator::createInternalGrid() {
-//	Triangle emptyTriangle;
-//	internalGrid.push_back(emptyTriangle);
-//
-//	for (int i = 0; i < zStepsNumber; i++) {
-//		for (int j = 0; j < yStepsNumber; j++) {
-//			Triangle triangle;
-//			triangle
-//		}
-//	}
-//}
+void ParallelepipedGenerator::createTriangles0ZY() {
+	for (int i = 0; i < zStepsNumber; i++) {
+		for (int j = 0; j < yStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i + 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i + 1].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i + 1].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTrianglesMXY() {
+	for (int i = 0; i < xStepsNumber; i++) {
+		for (int j = 0; j < yStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][j + 1][zStepsNumber].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][j][zStepsNumber].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][zStepsNumber].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][j + 1][zStepsNumber].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTrianglesMZY() {
+	for (int i = zStepsNumber; i > 0; i--) {
+		for (int j = 0; j < yStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i - 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i - 1].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i - 1].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTriangles0XY() {
+	for (int i = xStepsNumber; i > 0; i--) {
+		for (int j = 0; j < yStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][zStepsNumber].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j][zStepsNumber].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][zStepsNumber].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][zStepsNumber].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTriangles0XZ() {
+	for (int i = 0; i < xStepsNumber; i++) {
+		for (int j = 0; j < zStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][0][j].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][0][j + 1].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][0][j].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTrianglesMXZ() {
+	for (int i = 0; i < xStepsNumber; i++) {
+		for (int j = 0; j < zStepsNumber; j++) {
+			Triangle triangleOne;
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][yStepsNumber][j].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j + 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][yStepsNumber][j + 1].number);
+			internalGrid.push_back(triangleOne);
+
+			Triangle triangleTwo;
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][yStepsNumber][j].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j + 1].number);
+			internalGrid.push_back(triangleTwo);
+		}
+	}
+}
+
+void ParallelepipedGenerator::createTriangles() {
+	Triangle emptyTriangle;
+	internalGrid.push_back(emptyTriangle);
+
+	createTriangles0ZY();
+	createTrianglesMXY();
+	createTrianglesMZY();
+	createTriangles0XY();
+	createTriangles0XZ();
+	createTrianglesMXZ();
+}
+
+void ParallelepipedGenerator::createInternalGrid() {
+	createTriangles();
+}

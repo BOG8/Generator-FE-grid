@@ -24,6 +24,7 @@ void ProcessManager::runParallelepipedGenerator() {
 	parallelepipedGenerator.correctAllSteps();
 	parallelepipedGenerator.createNodes(ELLIPSOID_PROPERTIES);
 	parallelepipedGenerator.transferAllNodes();
+	parallelepipedGenerator.createInternalGrid();
 }
 
 void ProcessManager::run() {

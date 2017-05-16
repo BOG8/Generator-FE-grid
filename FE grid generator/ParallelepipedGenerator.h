@@ -32,4 +32,11 @@ private:
 	void correctStep(double &x, double &xStep, int &xStepsNumber);
 	bool isBelongsToEllipsoid(Node node);
 	void printNodesNumbers();
+	void createTriangles0ZY();
+	void createTrianglesMXY();
+	void createTrianglesMZY();
+	void createTriangles0XY();
+	void createTriangles0XZ();
+	void createTrianglesMXZ();
+	void createTriangles();
 };
