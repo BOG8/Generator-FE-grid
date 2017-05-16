@@ -13,4 +13,6 @@ class GridConnector {
 public:
 	GridConnector();
 	~GridConnector();
+
+	void setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr);
 };

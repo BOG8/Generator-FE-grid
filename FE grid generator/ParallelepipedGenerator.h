@@ -28,6 +28,9 @@ public:
 	void transferAllNodes();
 	void createInternalGrid();
 
+	vector<Node> getNodes();
+	vector<Triangle> getGrid();
+
 private:
 	void correctStep(double &x, double &xStep, int &xStepsNumber);
 	bool isBelongsToEllipsoid(Node node);

@@ -28,7 +28,14 @@ void ProcessManager::runParallelepipedGenerator() {
 }
 
 void ProcessManager::runGridConnector() {
-
+	vector<Node> nodes = ellipsoidGenerator.getNodes();
+	vector<Node> otherNodes = parallelepipedGenerator.getNodes();
+	for (int i = 1; i < otherNodes.size(); i++) {
+		nodes.push_back(otherNodes[i]);
+	}
+	otherNodes.clear();
+	vector<Node> emptyVector;
+	gridConnector.setData(nodes, emptyVector, parallelepipedGenerator.getGrid(), ellipsoidGenerator.getGrid());
 }
 
 void ProcessManager::run() {

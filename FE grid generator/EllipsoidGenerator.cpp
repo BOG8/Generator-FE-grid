@@ -800,3 +800,11 @@ double EllipsoidGenerator::getY() {
 double EllipsoidGenerator::getZ() {
 	return z;
 }
+
+vector<Node> EllipsoidGenerator::getNodes() {
+	return nodes;
+}
+
+vector<Triangle> EllipsoidGenerator::getGrid() {
+	return externalGrid;
+}

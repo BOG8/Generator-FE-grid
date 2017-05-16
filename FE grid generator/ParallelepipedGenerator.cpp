@@ -238,3 +238,11 @@ void ParallelepipedGenerator::createTriangles() {
 void ParallelepipedGenerator::createInternalGrid() {
 	createTriangles();
 }
+
+vector<Node> ParallelepipedGenerator::getNodes() {
+	return nodes;
+}
+
+vector<Triangle> ParallelepipedGenerator::getGrid() {
+	return internalGrid;
+}
