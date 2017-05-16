@@ -155,15 +155,15 @@ void ParallelepipedGenerator::createTrianglesMZY() {
 	for (int i = zStepsNumber; i > 0; i--) {
 		for (int j = 0; j < yStepsNumber; j++) {
 			Triangle triangleOne;
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i - 1].number);
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i - 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j][i].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i - 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j][i - 1].number);
 			internalGrid.push_back(triangleOne);
 
 			Triangle triangleTwo;
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i].number);
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i - 1].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i - 1].number);
 			internalGrid.push_back(triangleTwo);
 		}
 	}
@@ -173,15 +173,15 @@ void ParallelepipedGenerator::createTriangles0XY() {
 	for (int i = xStepsNumber; i > 0; i--) {
 		for (int j = 0; j < yStepsNumber; j++) {
 			Triangle triangleOne;
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][zStepsNumber].number);
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j][zStepsNumber].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][j][0].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][0].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j][0].number);
 			internalGrid.push_back(triangleOne);
 
 			Triangle triangleTwo;
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][zStepsNumber].number);
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][zStepsNumber].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][0].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][0].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][0].number);
 			internalGrid.push_back(triangleTwo);
 		}
 	}
