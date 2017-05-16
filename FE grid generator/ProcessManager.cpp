@@ -27,7 +27,12 @@ void ProcessManager::runParallelepipedGenerator() {
 	parallelepipedGenerator.createInternalGrid();
 }
 
+void ProcessManager::runGridConnector() {
+
+}
+
 void ProcessManager::run() {
 	runEllipsoidGenerator();
 	runParallelepipedGenerator();
+	runGridConnector();
 }

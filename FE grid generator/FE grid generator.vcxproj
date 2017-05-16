@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EllipsoidGenerator.h" />
+    <ClInclude Include="GridConnector.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="ParallelepipedGenerator.h" />
     <ClInclude Include="ProcessManager.h" />
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EllipsoidGenerator.cpp" />
+    <ClCompile Include="GridConnector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ParallelepipedGenerator.cpp" />
     <ClCompile Include="ProcessManager.cpp" />
