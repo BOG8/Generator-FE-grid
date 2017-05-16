@@ -1,6 +1,8 @@
 #include "Node.h"
 #include "Triangle.h"
 #include "Tetrahedron.h"
+#include <iostream>
+#include <fstream>
 #include <list>
 
 class GridConnector {
@@ -15,4 +17,5 @@ public:
 	~GridConnector();
 
 	void setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr);
+	void writeGridInGidFile();
 };

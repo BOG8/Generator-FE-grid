@@ -36,6 +36,7 @@ void ProcessManager::runGridConnector() {
 	otherNodes.clear();
 	vector<Node> emptyVector;
 	gridConnector.setData(nodes, emptyVector, parallelepipedGenerator.getGrid(), ellipsoidGenerator.getGrid());
+	gridConnector.writeGridInGidFile();
 }
 
 void ProcessManager::run() {

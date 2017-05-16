@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="EllipsoidProperties.txt" />
+    <Text Include="GridResult.txt" />
     <Text Include="ParallelepipedProperties.txt" />
     <Text Include="Result.txt" />
   </ItemGroup>
