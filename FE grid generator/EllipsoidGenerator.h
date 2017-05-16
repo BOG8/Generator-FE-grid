@@ -1,3 +1,6 @@
+#ifndef ELLIPSOIDGENERATOR_H
+#define ELLIPSOIDGENERATOR_H
+
 #include "Node.h"
 #include "Triangle.h"
 #include "Tetrahedron.h"
@@ -36,6 +39,12 @@ public:
 	void writeTetrahedronsInFile(string fileName);
 	void writeGidFile();
 	int getMaxNumber();
+	double getA();
+	double getB();
+	double getC();
+	double getX();
+	double getY();
+	double getZ();
 
 private:
 	void allocateMemory();
@@ -70,3 +79,5 @@ private:
 public:
 	void addInternalNodesToTriangulation();
 };
+
+#endif

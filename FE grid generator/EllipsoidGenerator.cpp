@@ -776,3 +776,27 @@ void EllipsoidGenerator::writeGidFile() {
 int EllipsoidGenerator::getMaxNumber() {
 	return maxNumber;
 }
+
+double EllipsoidGenerator::getA() {
+	return a;
+}
+
+double EllipsoidGenerator::getB() {
+	return b;
+}
+
+double EllipsoidGenerator::getC() {
+	return c;
+}
+
+double EllipsoidGenerator::getX() {
+	return x;
+}
+
+double EllipsoidGenerator::getY() {
+	return y;
+}
+
+double EllipsoidGenerator::getZ() {
+	return z;
+}

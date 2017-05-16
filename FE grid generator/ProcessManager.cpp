@@ -22,6 +22,7 @@ void ProcessManager::runParallelepipedGenerator() {
 	parallelepipedGenerator.setMinNumber(ellipsoidGenerator.getMaxNumber());
 	parallelepipedGenerator.loadEllipsoidProperties(PARALLELEPIPED_PROPERTIES);
 	parallelepipedGenerator.correctAllSteps();
+	parallelepipedGenerator.createNodes(ELLIPSOID_PROPERTIES);
 }
 
 void ProcessManager::run() {
