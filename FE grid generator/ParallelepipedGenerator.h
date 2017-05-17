@@ -45,5 +45,10 @@ private:
 	
 	void createInternalXZConnections(int index);
 	void createInternalConnections();
+	void createExternalConnections0YZ();
+	void createExternalConnectionsMXZ();
+	void createExternalConnectionsMYZ();
+	void createExternalConnections0XZ();
+	void createExternalConnections();
 	void createConnections();
 };
