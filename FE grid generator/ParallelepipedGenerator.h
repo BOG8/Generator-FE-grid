@@ -42,4 +42,8 @@ private:
 	void createTriangles0XZ();
 	void createTrianglesMXZ();
 	void createTriangles();
+	
+	void createInternalXZConnections(int index);
+	void createInternalConnections();
+	void createConnections();
 };

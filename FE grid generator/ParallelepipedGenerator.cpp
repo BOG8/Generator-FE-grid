@@ -192,14 +192,14 @@ void ParallelepipedGenerator::createTriangles0XZ() {
 		for (int j = 0; j < zStepsNumber; j++) {
 			Triangle triangleOne;
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][0][j].number);
-			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][0][j + 1].number);
+			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
 			internalGrid.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][0][j].number);
-			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
+			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j].number);
 			internalGrid.push_back(triangleTwo);
 		}
 	}
@@ -235,8 +235,55 @@ void ParallelepipedGenerator::createTriangles() {
 	createTrianglesMXZ();
 }
 
+void ParallelepipedGenerator::createInternalXZConnections(int index) {
+	int amountXZTringles = 2 * xStepsNumber * zStepsNumber;
+	int doubledZStepNumber = 2 * zStepsNumber;
+	int index0 = index + amountXZTringles;
+	for (int i = index + 1; i < index0; i = i + 2) {
+		internalGrid[i].neighbour.push_back(i - doubledZStepNumber + 1);
+		internalGrid[i].neighbour.push_back(i + 3);
+		internalGrid[i].neighbour.push_back(i + 1);
+
+		internalGrid[i + 1].neighbour.push_back(i - 1);
+		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber - 1);
+		internalGrid[i + 1].neighbour.push_back(i - 3);
+	}
+
+	int indexM = index0 + amountXZTringles;
+	for (int i = index0 + 1; i < indexM; i = i + 2) {
+		internalGrid[i].neighbour.push_back(i + 1);
+		internalGrid[i].neighbour.push_back(i + 3);
+		internalGrid[i].neighbour.push_back(i - doubledZStepNumber + 1);
+
+		internalGrid[i + 1].neighbour.push_back(i - 3);
+		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber - 1);
+		internalGrid[i + 1].neighbour.push_back(i - 1);
+	}
+}
+
+void ParallelepipedGenerator::createInternalConnections() {
+	int index = 4 * (yStepsNumber * zStepsNumber + yStepsNumber * xStepsNumber);
+	int doubledYStepNumber = 2 * yStepsNumber;
+	for (int i = 1; i < index; i = i + 2) {
+		internalGrid[i].neighbour.push_back(i + 1);
+		internalGrid[i].neighbour.push_back(i + doubledYStepNumber + 1);
+		internalGrid[i].neighbour.push_back(i - 1);
+
+		internalGrid[i + 1].neighbour.push_back(i - doubledYStepNumber - 1);
+		internalGrid[i + 1].neighbour.push_back(i + 1);
+		internalGrid[i + 1].neighbour.push_back(i - 1);
+	}
+
+	createInternalXZConnections(index);
+}
+
+void ParallelepipedGenerator::createConnections() {
+	createInternalConnections();
+}
+
 void ParallelepipedGenerator::createInternalGrid() {
 	createTriangles();
+	createConnections();
 }
 
 vector<Node> ParallelepipedGenerator::getNodes() {
