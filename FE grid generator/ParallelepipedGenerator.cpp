@@ -244,9 +244,9 @@ void ParallelepipedGenerator::createInternalXZConnections(int index) {
 		internalGrid[i].neighbour.push_back(i + 3);
 		internalGrid[i].neighbour.push_back(i + 1);
 
-		internalGrid[i + 1].neighbour.push_back(i - 1);
-		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber - 1);
-		internalGrid[i + 1].neighbour.push_back(i - 3);
+		internalGrid[i + 1].neighbour.push_back(i);
+		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber);
+		internalGrid[i + 1].neighbour.push_back(i - 2);
 	}
 
 	int indexM = index0 + amountXZTringles;
@@ -255,9 +255,9 @@ void ParallelepipedGenerator::createInternalXZConnections(int index) {
 		internalGrid[i].neighbour.push_back(i + 3);
 		internalGrid[i].neighbour.push_back(i - doubledZStepNumber + 1);
 
-		internalGrid[i + 1].neighbour.push_back(i - 3);
-		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber - 1);
-		internalGrid[i + 1].neighbour.push_back(i - 1);
+		internalGrid[i + 1].neighbour.push_back(i - 2);
+		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber);
+		internalGrid[i + 1].neighbour.push_back(i);
 	}
 }
 
@@ -269,9 +269,9 @@ void ParallelepipedGenerator::createInternalConnections() {
 		internalGrid[i].neighbour.push_back(i + doubledYStepNumber + 1);
 		internalGrid[i].neighbour.push_back(i - 1);
 
-		internalGrid[i + 1].neighbour.push_back(i - doubledYStepNumber - 1);
-		internalGrid[i + 1].neighbour.push_back(i + 1);
-		internalGrid[i + 1].neighbour.push_back(i - 1);
+		internalGrid[i + 1].neighbour.push_back(i - doubledYStepNumber);
+		internalGrid[i + 1].neighbour.push_back(i + 2);
+		internalGrid[i + 1].neighbour.push_back(i);
 	}
 
 	createInternalXZConnections(index);
