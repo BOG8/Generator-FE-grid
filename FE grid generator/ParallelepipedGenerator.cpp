@@ -369,11 +369,26 @@ void ParallelepipedGenerator::createExternalConnections0XZ() {
 	}
 }
 
+void ParallelepipedGenerator::createExternalConnections0Y0() {
+	int doubledYStepsNumber = 2 * yStepsNumber;
+	int mainMaxNumber = 4 * (yStepsNumber * zStepsNumber + yStepsNumber * xStepsNumber);
+
+	int start = 2;
+	int end = mainMaxNumber - 2 * yStepsNumber + 1;
+	for (int i = 0; i < yStepsNumber; i++) {
+		internalGrid[start].neighbour[0] = end;
+		internalGrid[end].neighbour[1] = start;
+		start = start + 2;
+		end = end + 2;
+	}
+}
+
 void ParallelepipedGenerator::createExternalConnections() {
 	createExternalConnections0YZ();
 	createExternalConnectionsMXZ();
 	createExternalConnectionsMYZ();
 	createExternalConnections0XZ();
+	createExternalConnections0Y0();
 }
 
 void ParallelepipedGenerator::createConnections() {

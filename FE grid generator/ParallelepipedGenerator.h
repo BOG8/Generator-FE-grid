@@ -49,6 +49,7 @@ private:
 	void createExternalConnectionsMXZ();
 	void createExternalConnectionsMYZ();
 	void createExternalConnections0XZ();
+	void createExternalConnections0Y0();
 	void createExternalConnections();
 	void createConnections();
 };
