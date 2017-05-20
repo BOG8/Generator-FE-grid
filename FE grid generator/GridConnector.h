@@ -8,7 +8,7 @@
 
 class GridConnector {
 	vector<Node> nodes;
-	vector<Rib> ribs;
+	vector<Rib> externalRibs;
 	vector<Node> internalNodes;
 	vector<Triangle> externalGrid;
 	vector<Triangle> internalGrid;
@@ -26,5 +26,6 @@ private:
 	void addEmptyTetrahedrons();
 	void addBasisAndConnections();
 	int getIncrementedIndex(int index);
+	bool isRibExist(Triangle triangle, vector<int> nodesNumbers);
 	void raiseTetrahedrons();
 };

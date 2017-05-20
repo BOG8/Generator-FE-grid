@@ -62,6 +62,19 @@ int GridConnector::getIncrementedIndex(int index) {
 	return index;
 }
 
+bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers) {
+	for (int i = 0; i < externalRibs.size(); i++) {
+		bool indicatorOne = externalRibs[i].nodesNumbers[0] == nodesNumbers[0] && externalRibs[i].nodesNumbers[1] == nodesNumbers[1];
+		bool indicatorTwo = externalRibs[i].nodesNumbers[0] == nodesNumbers[1] && externalRibs[i].nodesNumbers[1] == nodesNumbers[0];
+		if (indicatorOne || indicatorTwo) {
+			externalRibs[i].neighbours.push_back(triangle.tetrahedron);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void GridConnector::raiseTetrahedrons() {
 	for (int i = 1; i < externalGrid.size(); i++) {
 		Triangle triangle = externalGrid[i];
@@ -69,16 +82,16 @@ void GridConnector::raiseTetrahedrons() {
 			vector<int> nodesNumbers;
 			nodesNumbers.push_back(triangle.nodesNumbers[j]);
 			nodesNumbers.push_back(triangle.nodesNumbers[getIncrementedIndex(j)]);
-			bool isWasFound = false;
-			for (int k = 0; k < ribs.size(); k++) {
-				Rib rib = ribs[k];
-				bool indicatorOne = rib.nodesNumbers[0] == nodesNumbers[0] && rib.nodesNumbers[1] == nodesNumbers[1];
-				bool indicatorTwo = rib.nodesNumbers[0] == nodesNumbers[1] && rib.nodesNumbers[1] == nodesNumbers[0];
-				if (indicatorOne || indicatorTwo) {
-					isWasFound = true;
-				}
-			}
 
+			if (!isRibExist(triangle, nodesNumbers)) {
+				Rib rib;
+				rib.isEmptyArea = true;
+				for (int j = 0; j < 2; j++) {
+					rib.nodesNumbers.push_back(nodesNumbers[j]);
+				}
+				rib.neighbours.push_back(triangle.tetrahedron);
+				externalRibs.push_back(rib);
+			}
 		}
 	}
 }
