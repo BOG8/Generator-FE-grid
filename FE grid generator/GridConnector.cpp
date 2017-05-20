@@ -15,6 +15,80 @@ void GridConnector::setData(vector<Node> nodes, vector<Node> intNd, vector<Trian
 	this->internalGrid = intTr;
 }
 
+void GridConnector::addEmptyTetrahedrons() {
+	Tetrahedron tetrahedron;
+	for (int i = 1; i < externalGrid.size(); i++) {
+		tetrahedrons.push_front(tetrahedron);
+	}
+	for (int i = 1; i < internalGrid.size(); i++) {
+		tetrahedrons.push_front(tetrahedron);
+	}
+}
+
+void GridConnector::addBasisAndConnections() {
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	for (int i = 1; i < externalGrid.size(); i++) {
+		currentTetrahedron->nodesNumbers.push_back(-1);
+		for (int j = 0; j < 3; j++) {
+			currentTetrahedron->nodesNumbers.push_back(externalGrid[i].nodesNumbers[j]);
+		}
+		for (int j = 0; j < 4; j++) {
+			currentTetrahedron->neighbours.push_back(0);
+		}
+		externalGrid[i].tetrahedron = &(*currentTetrahedron);
+
+		currentTetrahedron++;
+	}
+	for (int i = 1; i < internalGrid.size(); i++) {
+		currentTetrahedron->nodesNumbers.push_back(-1);
+		for (int j = 0; j < 3; j++) {
+			currentTetrahedron->nodesNumbers.push_back(internalGrid[i].nodesNumbers[j]);
+		}
+		for (int j = 0; j < 4; j++) {
+			currentTetrahedron->neighbours.push_back(0);
+		}
+		internalGrid[i].tetrahedron = &(*currentTetrahedron);
+
+		currentTetrahedron++;
+	}
+}
+
+int GridConnector::getIncrementedIndex(int index) {
+	index++;
+	if (index == 3) {
+		return 0;
+	}
+
+	return index;
+}
+
+void GridConnector::raiseTetrahedrons() {
+	for (int i = 1; i < externalGrid.size(); i++) {
+		Triangle triangle = externalGrid[i];
+		for (int j = 0; j < 3; j++) {
+			vector<int> nodesNumbers;
+			nodesNumbers.push_back(triangle.nodesNumbers[j]);
+			nodesNumbers.push_back(triangle.nodesNumbers[getIncrementedIndex(j)]);
+			bool isWasFound = false;
+			for (int k = 0; k < ribs.size(); k++) {
+				Rib rib = ribs[k];
+				bool indicatorOne = rib.nodesNumbers[0] == nodesNumbers[0] && rib.nodesNumbers[1] == nodesNumbers[1];
+				bool indicatorTwo = rib.nodesNumbers[0] == nodesNumbers[1] && rib.nodesNumbers[1] == nodesNumbers[0];
+				if (indicatorOne || indicatorTwo) {
+					isWasFound = true;
+				}
+			}
+
+		}
+	}
+}
+
+void GridConnector::createTetrahedrons() {
+	addEmptyTetrahedrons();
+	addBasisAndConnections();
+	raiseTetrahedrons();
+}
+
 void GridConnector::writeGridInGidFile() {
 	ofstream file("GridResult.txt");
 	file << "mesh dimension = 3 elemtype triangle nnode = 3\ncoordinates\n";

@@ -1,6 +1,7 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
+#include "Tetrahedron.h"
 #include <vector>
 
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 struct Triangle {
 	vector<int> nodesNumbers;
 	vector<int> neighbours;
-	vector<int> ribs;
+	Tetrahedron* tetrahedron;
 };
 
 #endif
