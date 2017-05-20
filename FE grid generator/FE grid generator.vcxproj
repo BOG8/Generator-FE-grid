@@ -81,6 +81,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="ParallelepipedGenerator.h" />
     <ClInclude Include="ProcessManager.h" />
+    <ClInclude Include="Rib.h" />
     <ClInclude Include="Tetrahedron.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>

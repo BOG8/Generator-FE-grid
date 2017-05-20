@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "Rib.h"
 #include "Triangle.h"
 #include "Tetrahedron.h"
 #include <iostream>
@@ -7,6 +8,7 @@
 
 class GridConnector {
 	vector<Node> nodes;
+	vector<Rib> ribs;
 	vector<Node> internalNodes;
 	vector<Triangle> externalGrid;
 	vector<Triangle> internalGrid;
