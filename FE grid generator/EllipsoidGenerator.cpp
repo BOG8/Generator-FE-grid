@@ -244,19 +244,19 @@ void EllipsoidGenerator::createAllNodes() {
 }
 
 void EllipsoidGenerator::createExternalGridTopConnections(int phiIndex) {
-	externalGrid[1].neighbour.push_back(phiIndex);
-	externalGrid[1].neighbour.push_back(phiIndex + 2);
-	externalGrid[1].neighbour.push_back(2);
+	externalGrid[1].neighbours.push_back(phiIndex);
+	externalGrid[1].neighbours.push_back(phiIndex + 2);
+	externalGrid[1].neighbours.push_back(2);
 
 	for (int i = 2; i < phiIndex; i++) {
-		externalGrid[i].neighbour.push_back(i - 1);
-		externalGrid[i].neighbour.push_back(i * 2 + phiIndex);
-		externalGrid[i].neighbour.push_back(i + 1);
+		externalGrid[i].neighbours.push_back(i - 1);
+		externalGrid[i].neighbours.push_back(i * 2 + phiIndex);
+		externalGrid[i].neighbours.push_back(i + 1);
 	}
 
-	externalGrid[phiIndex].neighbour.push_back(phiIndex - 1);
-	externalGrid[phiIndex].neighbour.push_back(3 * phiIndex);
-	externalGrid[phiIndex].neighbour.push_back(1);
+	externalGrid[phiIndex].neighbours.push_back(phiIndex - 1);
+	externalGrid[phiIndex].neighbours.push_back(3 * phiIndex);
+	externalGrid[phiIndex].neighbours.push_back(1);
 }
 
 void EllipsoidGenerator::createExternalGridTop() {
@@ -285,35 +285,35 @@ void EllipsoidGenerator::createExternalGridTop() {
 void EllipsoidGenerator::createExternalGridMiddleConnections(int thetaIndex, int phiIndex) {
 	int doublePhiIndex = 2 * phiIndex;
 	for (int i = 0; i < thetaIndex - 1; i++) {
-		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex);
-		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back((i + 1) * doublePhiIndex + phiIndex + 2);
-		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbour.push_back(i * doublePhiIndex + phiIndex + 2);
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbours.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex);
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbours.push_back((i + 1) * doublePhiIndex + phiIndex + 2);
+		externalGrid[i * doublePhiIndex + phiIndex + 1].neighbours.push_back(i * doublePhiIndex + phiIndex + 2);
 
 		for (int j = 2; j < doublePhiIndex; j++) {
 			int number = i * doublePhiIndex + phiIndex + j;
 			if (number % 2 == 0) {
-				externalGrid[number].neighbour.push_back(number - 1);
-				externalGrid[number].neighbour.push_back(number + 1);
-				externalGrid[number].neighbour.push_back(number - doublePhiIndex - 1);
+				externalGrid[number].neighbours.push_back(number - 1);
+				externalGrid[number].neighbours.push_back(number + 1);
+				externalGrid[number].neighbours.push_back(number - doublePhiIndex - 1);
 			} else {
-				externalGrid[number].neighbour.push_back(number - 1);
-				externalGrid[number].neighbour.push_back(number + doublePhiIndex + 1);
-				externalGrid[number].neighbour.push_back(number + 1);
+				externalGrid[number].neighbours.push_back(number - 1);
+				externalGrid[number].neighbours.push_back(number + doublePhiIndex + 1);
+				externalGrid[number].neighbours.push_back(number + 1);
 			}
 		}
 
-		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex - 1);
-		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back(i * doublePhiIndex + phiIndex + 1);
-		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbour.push_back((i - 1) * doublePhiIndex + phiIndex + doublePhiIndex - 1);
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbours.push_back(i * doublePhiIndex + phiIndex + doublePhiIndex - 1);
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbours.push_back(i * doublePhiIndex + phiIndex + 1);
+		externalGrid[i * doublePhiIndex + phiIndex + doublePhiIndex].neighbours.push_back((i - 1) * doublePhiIndex + phiIndex + doublePhiIndex - 1);
 	}
 
 	for (int i = phiIndex + 2; i <= phiIndex + doublePhiIndex; i = i + 2) {
-		externalGrid[i].neighbour[2] = (i - phiIndex) / 2;
+		externalGrid[i].neighbours[2] = (i - phiIndex) / 2;
 	}
 	int tempIndex = phiIndex + (thetaIndex - 1) * doublePhiIndex;
 	for (int i = phiIndex + (thetaIndex - 2) * doublePhiIndex + 1; i <= phiIndex + (thetaIndex - 1) * doublePhiIndex; i = i + 2) {
 		tempIndex++;
-		externalGrid[i].neighbour[1] = (tempIndex);
+		externalGrid[i].neighbours[1] = (tempIndex);
 	}
 }
 
@@ -353,19 +353,19 @@ void EllipsoidGenerator::createExternalGridMiddle() {
 
 void EllipsoidGenerator::createExternalGridBottomConnections(int thetaIndex, int phiIndex) {
 	int doublePhiIndex = 2 * phiIndex;
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex);
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 2);
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 1 - doublePhiIndex);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 2);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + 1].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 1 - doublePhiIndex);
 
 	for (int i = 2; i < phiIndex; i++) {
-		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + i - 1);
-		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + i + 1);
-		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex - doublePhiIndex + (i * 2) - 1);
+		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + i - 1);
+		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + i + 1);
+		externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + i].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex - doublePhiIndex + (i * 2) - 1);
 	}
 
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex - 1);
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 1);
-	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbour.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex - 1);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex - 1);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex + 1);
+	externalGrid[phiIndex + (thetaIndex - 1) * doublePhiIndex + phiIndex].neighbours.push_back(phiIndex + (thetaIndex - 1) * doublePhiIndex - 1);
 }
 
 void EllipsoidGenerator::createExternalGridBottom() {
@@ -410,7 +410,7 @@ void EllipsoidGenerator::createInitialTriangulation() {
 
 	list<Tetrahedron>::iterator iTetrahedron = tetrahedrons.begin();
 	for (int i = 1; i < size; i++) {
-		iTetrahedron->neighbour.push_back(0);
+		iTetrahedron->neighbours.push_back(0);
 		for (int j = 0; j < 3; j++) {
 			int k = j + 1;
 			if (k == 3) {
@@ -418,11 +418,11 @@ void EllipsoidGenerator::createInitialTriangulation() {
 			}
 
 			list<Tetrahedron>::iterator neighbourTetrahedron = tetrahedrons.begin();
-			int number = externalGrid[i].neighbour[k];
+			int number = externalGrid[i].neighbours[k];
 			for (int n = 1; n < number; n++) {
 				neighbourTetrahedron++;
 			}
-			iTetrahedron->neighbour.push_back(&(*neighbourTetrahedron));
+			iTetrahedron->neighbours.push_back(&(*neighbourTetrahedron));
 		}
 		iTetrahedron++;
 	}
@@ -526,7 +526,7 @@ void EllipsoidGenerator::deleteGarbage() {
 	list<Tetrahedron>::iterator end = tetrahedrons.end();
 
 	while (currentTetrahedron != end) {
-		if (currentTetrahedron->neighbour.size() == 0 && currentTetrahedron->nodesNumbers.size() == 0) {
+		if (currentTetrahedron->neighbours.size() == 0 && currentTetrahedron->nodesNumbers.size() == 0) {
 			tetrahedrons.erase(currentTetrahedron++);
 		} else {
 			currentTetrahedron++;
@@ -541,7 +541,7 @@ void EllipsoidGenerator::fillNeighours(vector<Tetrahedron*> &neighbours, vector<
 	int nodeNumber = currentTetrahedron->nodesNumbers[status];
 
 	for (int i = 0; i < neighbours.size(); i++) {
-		Tetrahedron* neighbour = neighbours[i]->neighbour[getIncrementedStatus(basisRibNodes[i])];
+		Tetrahedron* neighbour = neighbours[i]->neighbours[getIncrementedStatus(basisRibNodes[i])];
 		if (neighbours[0] != neighbour) {
 			neighbours.push_back(neighbour);
 			for (int j = 1; j < 4; j++) {
@@ -612,60 +612,60 @@ void EllipsoidGenerator::addInternalNodesToTriangulation() {
 					for (int k = 0; k < neighbours.size(); k++) {
 						partOfInitialTetrahedron++;
 					}
-					newTetrahedron->neighbour.push_back(&(*partOfInitialTetrahedron));
-					Tetrahedron* externalTetrahedron = neighbours[j]->neighbour[basisRibNodes[j]];
+					newTetrahedron->neighbours.push_back(&(*partOfInitialTetrahedron));
+					Tetrahedron* externalTetrahedron = neighbours[j]->neighbours[basisRibNodes[j]];
 					for (int k = 0; k < 4; k++) {
-						if (externalTetrahedron->neighbour[k] == neighbours[j]) {
-							externalTetrahedron->neighbour[k] = &(*newTetrahedron);
+						if (externalTetrahedron->neighbours[k] == neighbours[j]) {
+							externalTetrahedron->neighbours[k] = &(*newTetrahedron);
 						}
 					}
-					newTetrahedron->neighbour.push_back(externalTetrahedron);
+					newTetrahedron->neighbours.push_back(externalTetrahedron);
 					list<Tetrahedron>::iterator rightNeighbour = newTetrahedron;
 					rightNeighbour++;
-					newTetrahedron->neighbour.push_back(&(*rightNeighbour));
+					newTetrahedron->neighbours.push_back(&(*rightNeighbour));
 					list<Tetrahedron>::iterator leftNeighbour = newTetrahedron;
 					leftNeighbour--;
-					newTetrahedron->neighbour.push_back(&(*leftNeighbour));
+					newTetrahedron->neighbours.push_back(&(*leftNeighbour));
 
 					newTetrahedron++;
 				}
-				upFirst->neighbour[3] = &(*upLast);
-				upLast->neighbour[2] = &(*upFirst);
+				upFirst->neighbours[3] = &(*upLast);
+				upLast->neighbours[2] = &(*upFirst);
 
 				for (int j = 0; j < neighbours.size(); j++) {
-					Tetrahedron* externalTetrahedron = neighbours[j]->neighbour[0];
+					Tetrahedron* externalTetrahedron = neighbours[j]->neighbours[0];
 					if (externalTetrahedron != 0) {
 						for (int k = 0; k < 4; k++) {
-							if (externalTetrahedron->neighbour[k] == neighbours[j]) {
-								externalTetrahedron->neighbour[k] = &(*newTetrahedron);
+							if (externalTetrahedron->neighbours[k] == neighbours[j]) {
+								externalTetrahedron->neighbours[k] = &(*newTetrahedron);
 							}
 						}
 					}
-					newTetrahedron->neighbour.push_back(externalTetrahedron);
+					newTetrahedron->neighbours.push_back(externalTetrahedron);
 					list<Tetrahedron>::iterator partOfInitialTetrahedron = newTetrahedron;
 					for (int k = 0; k < neighbours.size(); k++) {
 						partOfInitialTetrahedron--;
 					}
-					newTetrahedron->neighbour.push_back(&(*partOfInitialTetrahedron));
+					newTetrahedron->neighbours.push_back(&(*partOfInitialTetrahedron));
 					list<Tetrahedron>::iterator rightNeighbour = newTetrahedron;
 					rightNeighbour++;
 					if (rightNeighbour != end) {
-						newTetrahedron->neighbour.push_back(&(*rightNeighbour));
+						newTetrahedron->neighbours.push_back(&(*rightNeighbour));
 					} else {
-						newTetrahedron->neighbour.push_back(0);
+						newTetrahedron->neighbours.push_back(0);
 					}
 					list<Tetrahedron>::iterator leftNeighbour = newTetrahedron;
 					leftNeighbour--;
-					newTetrahedron->neighbour.push_back(&(*leftNeighbour));
+					newTetrahedron->neighbours.push_back(&(*leftNeighbour));
 
 					newTetrahedron++;
 				}
-				downFirst->neighbour[3] = &(*downLast);
-				downLast->neighbour[2] = &(*downFirst);
+				downFirst->neighbours[3] = &(*downLast);
+				downLast->neighbours[2] = &(*downFirst);
 
 				for (int j = 0; j < neighbours.size(); j++) {
 					neighbours[j]->nodesNumbers.clear();
-					neighbours[j]->neighbour.clear();
+					neighbours[j]->neighbours.clear();
 				}
 
 				deleteGarbage();

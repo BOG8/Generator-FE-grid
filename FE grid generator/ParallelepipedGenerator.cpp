@@ -240,24 +240,24 @@ void ParallelepipedGenerator::createInternalXZConnections(int index) {
 	int doubledZStepNumber = 2 * zStepsNumber;
 	int index0 = index + amountXZTringles;
 	for (int i = index + 1; i < index0; i = i + 2) {
-		internalGrid[i].neighbour.push_back(i - doubledZStepNumber + 1);
-		internalGrid[i].neighbour.push_back(i + 3);
-		internalGrid[i].neighbour.push_back(i + 1);
+		internalGrid[i].neighbours.push_back(i - doubledZStepNumber + 1);
+		internalGrid[i].neighbours.push_back(i + 3);
+		internalGrid[i].neighbours.push_back(i + 1);
 
-		internalGrid[i + 1].neighbour.push_back(i);
-		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber);
-		internalGrid[i + 1].neighbour.push_back(i - 2);
+		internalGrid[i + 1].neighbours.push_back(i);
+		internalGrid[i + 1].neighbours.push_back(i + doubledZStepNumber);
+		internalGrid[i + 1].neighbours.push_back(i - 2);
 	}
 
 	int indexM = index0 + amountXZTringles;
 	for (int i = index0 + 1; i < indexM; i = i + 2) {
-		internalGrid[i].neighbour.push_back(i + 1);
-		internalGrid[i].neighbour.push_back(i + 3);
-		internalGrid[i].neighbour.push_back(i - doubledZStepNumber + 1);
+		internalGrid[i].neighbours.push_back(i + 1);
+		internalGrid[i].neighbours.push_back(i + 3);
+		internalGrid[i].neighbours.push_back(i - doubledZStepNumber + 1);
 
-		internalGrid[i + 1].neighbour.push_back(i - 2);
-		internalGrid[i + 1].neighbour.push_back(i + doubledZStepNumber);
-		internalGrid[i + 1].neighbour.push_back(i);
+		internalGrid[i + 1].neighbours.push_back(i - 2);
+		internalGrid[i + 1].neighbours.push_back(i + doubledZStepNumber);
+		internalGrid[i + 1].neighbours.push_back(i);
 	}
 }
 
@@ -265,13 +265,13 @@ void ParallelepipedGenerator::createInternalConnections() {
 	int index = 4 * (yStepsNumber * zStepsNumber + yStepsNumber * xStepsNumber);
 	int doubledYStepNumber = 2 * yStepsNumber;
 	for (int i = 1; i < index; i = i + 2) {
-		internalGrid[i].neighbour.push_back(i + 1);
-		internalGrid[i].neighbour.push_back(i + doubledYStepNumber + 1);
-		internalGrid[i].neighbour.push_back(i - 1);
+		internalGrid[i].neighbours.push_back(i + 1);
+		internalGrid[i].neighbours.push_back(i + doubledYStepNumber + 1);
+		internalGrid[i].neighbours.push_back(i - 1);
 
-		internalGrid[i + 1].neighbour.push_back(i - doubledYStepNumber);
-		internalGrid[i + 1].neighbour.push_back(i + 2);
-		internalGrid[i + 1].neighbour.push_back(i);
+		internalGrid[i + 1].neighbours.push_back(i - doubledYStepNumber);
+		internalGrid[i + 1].neighbours.push_back(i + 2);
+		internalGrid[i + 1].neighbours.push_back(i);
 	}
 
 	createInternalXZConnections(index);
@@ -284,8 +284,8 @@ void ParallelepipedGenerator::createExternalConnections0YZ() {
 	int main0 = 1;
 	int side0 = mainMaxNumber + 1;
 	for (int i = 0; i < zStepsNumber; i++) {
-		internalGrid[main0].neighbour[2] = side0;
-		internalGrid[side0].neighbour[0] = main0;
+		internalGrid[main0].neighbours[2] = side0;
+		internalGrid[side0].neighbours[0] = main0;
 		main0 = main0 + doubledYStepsNumber;
 		side0 = side0 + 2;
 	}
@@ -293,8 +293,8 @@ void ParallelepipedGenerator::createExternalConnections0YZ() {
 	int mainM = doubledYStepsNumber;
 	int sideM = mainMaxNumber + 2 * xStepsNumber * zStepsNumber + 1;
 	for (int i = 0; i < zStepsNumber; i++) {
-		internalGrid[mainM].neighbour[1] = sideM;
-		internalGrid[sideM].neighbour[2] = mainM;
+		internalGrid[mainM].neighbours[1] = sideM;
+		internalGrid[sideM].neighbours[2] = mainM;
 		mainM = mainM + doubledYStepsNumber;
 		sideM = sideM + 2;
 	}
@@ -307,8 +307,8 @@ void ParallelepipedGenerator::createExternalConnectionsMXZ() {
 	int main0 = 2 * yStepsNumber * zStepsNumber + 1;
 	int side0 = mainMaxNumber + 2 * zStepsNumber - 1;
 	for (int i = 0; i < xStepsNumber; i++) {
-		internalGrid[main0].neighbour[2] = side0;
-		internalGrid[side0].neighbour[1] = main0;
+		internalGrid[main0].neighbours[2] = side0;
+		internalGrid[side0].neighbours[1] = main0;
 		main0 = main0 + doubledYStepsNumber;
 		side0 = side0 + 2 * zStepsNumber;
 	}
@@ -316,8 +316,8 @@ void ParallelepipedGenerator::createExternalConnectionsMXZ() {
 	int mainM = 2 * yStepsNumber * zStepsNumber + doubledYStepsNumber;
 	int sideM = mainMaxNumber + 2 * xStepsNumber * zStepsNumber + 2 * zStepsNumber - 1;
 	for (int i = 0; i < xStepsNumber; i++) {
-		internalGrid[mainM].neighbour[1] = sideM;
-		internalGrid[sideM].neighbour[1] = mainM;
+		internalGrid[mainM].neighbours[1] = sideM;
+		internalGrid[sideM].neighbours[1] = mainM;
 		mainM = mainM + doubledYStepsNumber;
 		sideM = sideM + 2 * zStepsNumber;
 	}
@@ -330,8 +330,8 @@ void ParallelepipedGenerator::createExternalConnectionsMYZ() {
 	int main0 = 2 * (yStepsNumber * zStepsNumber + yStepsNumber * xStepsNumber) + 1;
 	int side0 = mainMaxNumber + 2 * zStepsNumber * xStepsNumber;
 	for (int i = 0; i < zStepsNumber; i++) {
-		internalGrid[main0].neighbour[2] = side0;
-		internalGrid[side0].neighbour[1] = main0;
+		internalGrid[main0].neighbours[2] = side0;
+		internalGrid[side0].neighbours[1] = main0;
 		main0 = main0 + doubledYStepsNumber;
 		side0 = side0 - 2;
 	}
@@ -339,8 +339,8 @@ void ParallelepipedGenerator::createExternalConnectionsMYZ() {
 	int mainM = 2 * (yStepsNumber * zStepsNumber + yStepsNumber * xStepsNumber) + doubledYStepsNumber;
 	int sideM = mainMaxNumber + 4 * zStepsNumber * xStepsNumber;
 	for (int i = 0; i < zStepsNumber; i++) {
-		internalGrid[mainM].neighbour[1] = sideM;
-		internalGrid[sideM].neighbour[1] = mainM;
+		internalGrid[mainM].neighbours[1] = sideM;
+		internalGrid[sideM].neighbours[1] = mainM;
 		mainM = mainM + doubledYStepsNumber;
 		sideM = sideM - 2;
 	}
@@ -353,8 +353,8 @@ void ParallelepipedGenerator::createExternalConnections0XZ() {
 	int main0 = 4 * (yStepsNumber * zStepsNumber) + 2 * yStepsNumber * xStepsNumber + 1;
 	int side0 = mainMaxNumber + 2 * zStepsNumber * xStepsNumber - 2 * zStepsNumber + 2;
 	for (int i = 0; i < xStepsNumber; i++) {
-		internalGrid[main0].neighbour[2] = side0;
-		internalGrid[side0].neighbour[2] = main0;
+		internalGrid[main0].neighbours[2] = side0;
+		internalGrid[side0].neighbours[2] = main0;
 		main0 = main0 + doubledYStepsNumber;
 		side0 = side0 - 2 * zStepsNumber;
 	}
@@ -362,8 +362,8 @@ void ParallelepipedGenerator::createExternalConnections0XZ() {
 	int mainM = 4 * (yStepsNumber * zStepsNumber) + 2 * yStepsNumber * xStepsNumber + doubledYStepsNumber;
 	int sideM = mainMaxNumber + 4 * zStepsNumber * xStepsNumber - 2 * zStepsNumber + 2;
 	for (int i = 0; i < xStepsNumber; i++) {
-		internalGrid[mainM].neighbour[1] = sideM;
-		internalGrid[sideM].neighbour[0] = mainM;
+		internalGrid[mainM].neighbours[1] = sideM;
+		internalGrid[sideM].neighbours[0] = mainM;
 		mainM = mainM + doubledYStepsNumber;
 		sideM = sideM - 2 * zStepsNumber;
 	}
@@ -376,8 +376,8 @@ void ParallelepipedGenerator::createExternalConnections0Y0() {
 	int start = 2;
 	int end = mainMaxNumber - 2 * yStepsNumber + 1;
 	for (int i = 0; i < yStepsNumber; i++) {
-		internalGrid[start].neighbour[0] = end;
-		internalGrid[end].neighbour[1] = start;
+		internalGrid[start].neighbours[0] = end;
+		internalGrid[end].neighbours[1] = start;
 		start = start + 2;
 		end = end + 2;
 	}

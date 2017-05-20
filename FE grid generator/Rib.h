@@ -2,6 +2,6 @@
 
 struct Rib {
 	vector<int> nodesNumbers;
-	vector<Tetrahedron*> neighbour;
+	vector<Tetrahedron*> neighbours;
 	bool isEmptyArea;
 };
