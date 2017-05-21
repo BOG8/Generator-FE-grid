@@ -64,10 +64,9 @@ int GridConnector::getIncrementedIndex(int index) {
 
 bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers) {
 	for (int i = 0; i < externalRibs.size(); i++) {
-		bool indicatorOne = externalRibs[i].nodesNumbers[0] == nodesNumbers[0] && externalRibs[i].nodesNumbers[1] == nodesNumbers[1];
-		bool indicatorTwo = externalRibs[i].nodesNumbers[0] == nodesNumbers[1] && externalRibs[i].nodesNumbers[1] == nodesNumbers[0];
-		if (indicatorOne || indicatorTwo) {
+		if (externalRibs[i].nodesNumbers[0] == nodesNumbers[1] && externalRibs[i].nodesNumbers[1] == nodesNumbers[0]) {
 			externalRibs[i].neighbours.push_back(triangle.tetrahedron);
+			triangle.tetrahedron->ribs.push_back(i);
 			return true;
 		}
 	}
@@ -91,6 +90,7 @@ void GridConnector::raiseTetrahedrons() {
 				}
 				rib.neighbours.push_back(triangle.tetrahedron);
 				externalRibs.push_back(rib);
+				triangle.tetrahedron->ribs.push_back(externalRibs.size() - 1);
 			}
 		}
 	}
