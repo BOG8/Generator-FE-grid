@@ -122,19 +122,70 @@ Node GridConnector::definePerpendicularPlaneNode(Node node) {
 	return planeNode;
 }
 
+double GridConnector::calculateDistance(Node one, Node two) {
+	return sqrt(pow(two.x - one.x, 2) + pow(two.y - one.y, 2) + pow(two.z - one.z, 2));
+}
+
+Node GridConnector::defineNodeVector(Node one, Node two) {
+	Node node;
+	node.x = two.x - one.x;
+	node.y = two.y - one.y;
+	node.z = two.z - one.z;
+
+	return node;
+}
+
+Node GridConnector::cutNodeVector(Node nodeVector, double multiplier) {
+	nodeVector.x = nodeVector.x * multiplier;
+	nodeVector.y = nodeVector.y * multiplier;
+	nodeVector.z = nodeVector.z * multiplier;
+
+	return nodeVector;
+}
+
+Node GridConnector::sumNodes(Node one, Node two) {
+	Node node;
+	node.x = one.x + two.x;
+	node.y = one.y + two.y;
+	node.z = one.z + two.z;
+	
+	return node;
+}
+
 void GridConnector::defineTop(Triangle triangle) {
 	Node one = nodes[triangle.nodesNumbers[0]];
 	Node two = nodes[triangle.nodesNumbers[1]];
 	Node three = nodes[triangle.nodesNumbers[2]];
-	
+
 	Node triangleCenter;
 	triangleCenter.x = (one.x + two.x + three.x) / 3;
 	triangleCenter.y = (one.y + two.y + three.y) / 3;
 	triangleCenter.z = (one.z + two.z + three.z) / 3;
 
-	definePlaneCoefficients(one, two, three);
-	Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
-	Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
+	for (int i = 0; i < internalGrid.size; i++) {
+		Node oneGrid = nodes[triangle.nodesNumbers[0]];
+		Node twoGrid = nodes[triangle.nodesNumbers[1]];
+		Node threeGrid = nodes[triangle.nodesNumbers[2]];
+		definePlaneCoefficients(oneGrid, twoGrid, threeGrid);
+
+		Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
+		Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
+
+		double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
+		double centerDefectDistance = calculateDistance(centerDefect, centerDefectPlaneNode);
+		double sum = centerDefectDistance + triangleCenterDistance;
+		double multiplier = triangleCenterDistance / sum;
+		Node nodeVector = defineNodeVector(triangleCenter, centerDefect);
+		Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
+		Node planeNode = sumNodes(triangleCenter, cuttedNodeVector);
+
+		double distance = calculateDistance(triangleCenter, centerDefect);
+		double distancePartOne = calculateDistance(triangleCenter, planeNode);
+		double distancePartTwo = calculateDistance(centerDefect, planeNode);
+		if (distancePartOne < distance && distancePartTwo < distance && /*isBelongToPlane*/) {
+
+		}
+	}
 }
 
 void GridConnector::raiseTetrahedrons() {

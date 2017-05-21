@@ -32,6 +32,10 @@ private:
 	void createExternalRibs(Triangle triangle);
 	void definePlaneCoefficients(Node one, Node two, Node three);
 	Node definePerpendicularPlaneNode(Node triangleCenter);
+	double calculateDistance(Node one, Node two);
+	Node defineNodeVector(Node one, Node two);
+	Node cutNodeVector(Node nodeVector, double multiplier);
+	Node sumNodes(Node one, Node two);
 	void defineTop(Triangle triangle);
 	void raiseTetrahedrons();
 };
