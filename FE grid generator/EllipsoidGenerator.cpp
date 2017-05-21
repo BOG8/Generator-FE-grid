@@ -808,3 +808,7 @@ vector<Node> EllipsoidGenerator::getNodes() {
 vector<Triangle> EllipsoidGenerator::getGrid() {
 	return externalGrid;
 }
+
+Node EllipsoidGenerator::getDefect() {
+	return axisZNodes[internalLevel + 1];
+}

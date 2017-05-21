@@ -7,6 +7,8 @@
 #include <list>
 
 class GridConnector {
+	Node centerDefect;
+	double planeA, planeB, planeC, planeD;
 	vector<Node> nodes;
 	vector<Rib> externalRibs;
 	vector<Node> internalNodes;
@@ -18,7 +20,7 @@ public:
 	GridConnector();
 	~GridConnector();
 
-	void setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr);
+	void setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr, Node node);
 	void createTetrahedrons();
 	void writeGridInGidFile();
 
@@ -27,5 +29,9 @@ private:
 	void addBasisAndConnections();
 	int getIncrementedIndex(int index);
 	bool isRibExist(Triangle triangle, vector<int> nodesNumbers);
+	void createExternalRibs(Triangle triangle);
+	void definePlaneCoefficients(Node one, Node two, Node three);
+	Node definePerpendicularPlaneNode(Node triangleCenter);
+	void defineTop(Triangle triangle);
 	void raiseTetrahedrons();
 };

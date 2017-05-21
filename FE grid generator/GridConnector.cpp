@@ -1,4 +1,5 @@
 #include "GridConnector.h"
+#include <math.h>
 
 GridConnector::GridConnector() {
 
@@ -8,11 +9,12 @@ GridConnector::~GridConnector() {
 
 }
 
-void GridConnector::setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr) {
+void GridConnector::setData(vector<Node> nodes, vector<Node> intNd, vector<Triangle> extTr, vector<Triangle> intTr, Node node) {
 	this->nodes = nodes;
 	this->internalNodes = intNd;
 	this->externalGrid = extTr;
 	this->internalGrid = intTr;
+	this->centerDefect = node;
 }
 
 void GridConnector::addEmptyTetrahedrons() {
@@ -74,25 +76,72 @@ bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers) {
 	return false;
 }
 
+void GridConnector::createExternalRibs(Triangle triangle) {
+	for (int i = 0; i < 3; i++) {
+		vector<int> nodesNumbers;
+		nodesNumbers.push_back(triangle.nodesNumbers[i]);
+		nodesNumbers.push_back(triangle.nodesNumbers[getIncrementedIndex(i)]);
+
+		if (!isRibExist(triangle, nodesNumbers)) {
+			Rib rib;
+			rib.isEmptyArea = true;
+			for (int j = 0; j < 2; j++) {
+				rib.nodesNumbers.push_back(nodesNumbers[j]);
+			}
+			rib.neighbours.push_back(triangle.tetrahedron);
+			externalRibs.push_back(rib);
+			triangle.tetrahedron->ribs.push_back(externalRibs.size() - 1);
+		}
+	}
+}
+
+void GridConnector::definePlaneCoefficients(Node one, Node two, Node three) {
+	double indX2 = two.x - one.x;
+	double indX3 = three.x - one.x;
+	double indY2 = two.y - one.y;
+	double indY3 = three.y - one.y;
+	double indZ2 = two.z - one.z;
+	double indZ3 = three.z - one.z;
+
+	double planeA = indY2 * indZ3 - indY3 * indZ2;
+	double planeB = indX2 * indZ3 - indX3 * indZ2;
+	double planeC = indX2 * indY3 - indX3 * indY2;
+	double planeD = - one.x * planeA + one.y * planeB - one.z * planeC;
+}
+
+Node GridConnector::definePerpendicularPlaneNode(Node node) {
+	double tCoeff = pow(planeA, 2) + pow(planeB, 2) + pow(planeC, 2);
+	double coeff = planeA * node.x + planeB * node.y + planeC * node.y + planeD;
+	double t = -(coeff / tCoeff);
+
+	Node planeNode;
+	planeNode.x = planeA * t + node.x;
+	planeNode.y = planeB * t + node.y;
+	planeNode.z = planeC * t + node.z;
+
+	return planeNode;
+}
+
+void GridConnector::defineTop(Triangle triangle) {
+	Node one = nodes[triangle.nodesNumbers[0]];
+	Node two = nodes[triangle.nodesNumbers[1]];
+	Node three = nodes[triangle.nodesNumbers[2]];
+	
+	Node triangleCenter;
+	triangleCenter.x = (one.x + two.x + three.x) / 3;
+	triangleCenter.y = (one.y + two.y + three.y) / 3;
+	triangleCenter.z = (one.z + two.z + three.z) / 3;
+
+	definePlaneCoefficients(one, two, three);
+	Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
+	Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
+}
+
 void GridConnector::raiseTetrahedrons() {
 	for (int i = 1; i < externalGrid.size(); i++) {
 		Triangle triangle = externalGrid[i];
-		for (int j = 0; j < 3; j++) {
-			vector<int> nodesNumbers;
-			nodesNumbers.push_back(triangle.nodesNumbers[j]);
-			nodesNumbers.push_back(triangle.nodesNumbers[getIncrementedIndex(j)]);
-
-			if (!isRibExist(triangle, nodesNumbers)) {
-				Rib rib;
-				rib.isEmptyArea = true;
-				for (int j = 0; j < 2; j++) {
-					rib.nodesNumbers.push_back(nodesNumbers[j]);
-				}
-				rib.neighbours.push_back(triangle.tetrahedron);
-				externalRibs.push_back(rib);
-				triangle.tetrahedron->ribs.push_back(externalRibs.size() - 1);
-			}
-		}
+		createExternalRibs(triangle);
+		defineTop(triangle);
 	}
 }
 

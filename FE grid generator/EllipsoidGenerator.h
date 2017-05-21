@@ -47,6 +47,7 @@ public:
 	double getZ();
 	vector<Node> getNodes();
 	vector<Triangle> getGrid();
+	Node getDefect();
 
 private:
 	void allocateMemory();
