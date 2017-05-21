@@ -36,6 +36,7 @@ private:
 	Node defineNodeVector(Node one, Node two);
 	Node cutNodeVector(Node nodeVector, double multiplier);
 	Node sumNodes(Node one, Node two);
+	bool isBelongToPlane(Node node);
 	void defineTop(Triangle triangle);
 	void raiseTetrahedrons();
 };
