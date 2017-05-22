@@ -104,14 +104,14 @@ void GridConnector::definePlaneCoefficients(Node one, Node two, Node three) {
 	double indZ3 = three.z - one.z;
 
 	planeA = indY2 * indZ3 - indY3 * indZ2;
-	planeB = indX2 * indZ3 - indX3 * indZ2;
+	planeB = -(indX2 * indZ3 - indX3 * indZ2);
 	planeC = indX2 * indY3 - indX3 * indY2;
-	planeD = - one.x * planeA + one.y * planeB - one.z * planeC;
+	planeD = - one.x * planeA - one.y * planeB - one.z * planeC;
 }
 
 Node GridConnector::definePerpendicularPlaneNode(Node node) {
 	double tCoeff = pow(planeA, 2) + pow(planeB, 2) + pow(planeC, 2);
-	double coeff = planeA * node.x + planeB * node.y + planeC * node.y + planeD;
+	double coeff = planeA * node.x + planeB * node.y + planeC * node.z + planeD;
 	double t = -(coeff / tCoeff);
 
 	Node planeNode;
@@ -153,13 +153,18 @@ Node GridConnector::sumNodes(Node one, Node two) {
 }
 
 bool GridConnector::isBelongToPlane(Node node) {
-	double one = planeA * node.x;
-	double two = planeB * node.y;
-	double three = planeC * node.z;
-	double four = planeD;
-	double result = abs(planeA * node.x + planeB * node.y + planeC * node.z + planeD);
-	bool key = result < 0.1;
-	return key;
+	return abs(planeA * node.x + planeB * node.y + planeC * node.z + planeD) < 0.000001;
+}
+
+int GridConnector::definePlaneSide(Node node) {
+	double result = planeA * node.x + planeB * node.y + planeC * node.z + planeD;
+	if (result < -0.000001) {
+		return -1;
+	} else if (result > 0.000001) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 void GridConnector::defineTop(Triangle triangle) {
@@ -179,22 +184,26 @@ void GridConnector::defineTop(Triangle triangle) {
 		Node threeGrid = nodes[internalGrid[i].nodesNumbers[2]];
 		definePlaneCoefficients(oneGrid, twoGrid, threeGrid);
 
-		Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
-		Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
+		int sideTriangleCenter = definePlaneSide(triangleCenter);
+		int sideDefect = definePlaneSide(centerDefect);
+		if (sideDefect != sideTriangleCenter && sideDefect != 0) {
+			Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
+			Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
 
-		double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
-		double centerDefectDistance = calculateDistance(centerDefect, centerDefectPlaneNode);
-		double sum = centerDefectDistance + triangleCenterDistance;
-		double multiplier = triangleCenterDistance / sum;
-		Node nodeVector = defineNodeVector(triangleCenter, centerDefect);
-		Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
-		Node planeNode = sumNodes(triangleCenter, cuttedNodeVector);
+			double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
+			double centerDefectDistance = calculateDistance(centerDefect, centerDefectPlaneNode);
+			double sum = centerDefectDistance + triangleCenterDistance;
+			double multiplier = triangleCenterDistance / sum;
+			Node nodeVector = defineNodeVector(triangleCenter, centerDefect);
+			Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
+			Node planeNode = sumNodes(triangleCenter, cuttedNodeVector);
 
-		if (isBelongToPlane(planeNode)) {
-			double distancePartOne = calculateDistance(triangleCenter, planeNode);
-			double distancePartTwo = calculateDistance(centerDefect, planeNode);
-			if (distancePartOne < distance && distancePartTwo < distance) {
-
+			if (isBelongToPlane(planeNode)) {
+				double distancePartOne = calculateDistance(triangleCenter, planeNode);
+				double distancePartTwo = calculateDistance(centerDefect, planeNode);
+				if (distancePartOne < distance && distancePartTwo < distance) {
+					cout << ": " << i;
+				}
 			}
 		}
 	}
@@ -204,6 +213,7 @@ void GridConnector::raiseTetrahedrons() {
 	for (int i = 1; i < externalGrid.size(); i++) {
 		Triangle triangle = externalGrid[i];
 		createExternalRibs(triangle);
+		cout << '\n' << i;
 		defineTop(triangle);
 	}
 }
