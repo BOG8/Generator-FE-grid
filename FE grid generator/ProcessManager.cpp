@@ -38,6 +38,7 @@ void ProcessManager::runGridConnector() {
 	gridConnector.setData(nodes, emptyVector, parallelepipedGenerator.getGrid(), ellipsoidGenerator.getGrid(), ellipsoidGenerator.getDefect());
 	gridConnector.createTetrahedrons();
 	gridConnector.writeGridInGidFile();
+	gridConnector.writeGidFile();
 }
 
 void ProcessManager::run() {

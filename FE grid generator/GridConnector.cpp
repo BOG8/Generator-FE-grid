@@ -14,7 +14,7 @@ void GridConnector::setData(vector<Node> nodes, vector<Node> intNd, vector<Trian
 	this->internalNodes = intNd;
 	this->externalGrid = extTr;
 	this->internalGrid = intTr;
-	this->centerDefect = node;
+	this->defectCenter = node;
 }
 
 void GridConnector::addEmptyTetrahedrons() {
@@ -126,7 +126,7 @@ double GridConnector::calculateDistance(Node one, Node two) {
 	return sqrt(pow(two.x - one.x, 2) + pow(two.y - one.y, 2) + pow(two.z - one.z, 2));
 }
 
-Node GridConnector::defineNodeVector(Node one, Node two) {
+Node GridConnector::defineVector(Node one, Node two) {
 	Node node;
 	node.x = two.x - one.x;
 	node.y = two.y - one.y;
@@ -167,7 +167,29 @@ int GridConnector::definePlaneSide(Node node) {
 	}
 }
 
-void GridConnector::defineTop(Triangle triangle) {
+double GridConnector::defineABSCrossProduct(Node one, Node two) {
+	double x = one.y * two.z - one.z * two.y;
+	double y = one.z * two.x - one.x * two.z;
+	double z = one.x * two.y - one.y * two.x;
+
+	return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+}
+
+int GridConnector::defineIndexOfMaxNumber(double one, double two, double three) {
+	if (one > two) {
+		if (one > three) {
+			return 0;
+		}
+	} else {
+		if (two > three) {
+			return 1;
+		}
+	}
+
+	return 2;
+}
+
+Node GridConnector::defineTriangleCenterNode(Triangle triangle) {
 	Node one = nodes[triangle.nodesNumbers[0]];
 	Node two = nodes[triangle.nodesNumbers[1]];
 	Node three = nodes[triangle.nodesNumbers[2]];
@@ -176,33 +198,68 @@ void GridConnector::defineTop(Triangle triangle) {
 	triangleCenter.x = (one.x + two.x + three.x) / 3;
 	triangleCenter.y = (one.y + two.y + three.y) / 3;
 	triangleCenter.z = (one.z + two.z + three.z) / 3;
-	double distance = calculateDistance(triangleCenter, centerDefect);
 
+	return triangleCenter;
+}
+
+Node GridConnector::definePlaneNode(Node triangleCenter) {
+	Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
+	Node centerDefectPlaneNode = definePerpendicularPlaneNode(defectCenter);
+
+	double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
+	double centerDefectDistance = calculateDistance(defectCenter, centerDefectPlaneNode);
+	double sum = centerDefectDistance + triangleCenterDistance;
+	double multiplier = triangleCenterDistance / sum;
+	Node nodeVector = defineVector(triangleCenter, defectCenter);
+	Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
+
+	return sumNodes(triangleCenter, cuttedNodeVector);
+}
+
+int GridConnector::defineAccessoryStatusOfNode(Node planeNode, Node A, Node B, Node C) {
+	Node vectorAB = defineVector(A, B);
+	Node vectorAC = defineVector(A, C);
+	Node vectorPA = defineVector(planeNode, A);
+	Node vectorPB = defineVector(planeNode, B);
+	Node vectorPC = defineVector(planeNode, C);
+
+	double areaABC = defineABSCrossProduct(vectorAC, vectorAB) / 2;
+	double alfa = defineABSCrossProduct(vectorPB, vectorPC) / (2 * areaABC);
+	double beta = defineABSCrossProduct(vectorPC, vectorPA) / (2 * areaABC);
+	double gamma = defineABSCrossProduct(vectorPA, vectorPB) / (2 * areaABC);
+	double zero = abs(alfa + beta + gamma - 1);
+
+	if (alfa >= 0 && alfa <= 1 && beta >= 0 && beta <= 1 && gamma >= 0 && gamma <= 1 && zero < 0.000001) {
+		return defineIndexOfMaxNumber(alfa, beta, gamma);
+	}
+
+	return -1;
+}
+
+void GridConnector::defineTop(Triangle triangle) {
+	Node triangleCenter = defineTriangleCenterNode(triangle);
+	double distance = calculateDistance(triangleCenter, defectCenter);
 	for (int i = 1; i < internalGrid.size(); i++) {
-		Node oneGrid = nodes[internalGrid[i].nodesNumbers[0]];
-		Node twoGrid = nodes[internalGrid[i].nodesNumbers[1]];
-		Node threeGrid = nodes[internalGrid[i].nodesNumbers[2]];
-		definePlaneCoefficients(oneGrid, twoGrid, threeGrid);
+		Node oneGridNode = nodes[internalGrid[i].nodesNumbers[0]];
+		Node twoGridNode = nodes[internalGrid[i].nodesNumbers[1]];
+		Node threeGridNode = nodes[internalGrid[i].nodesNumbers[2]];
+		definePlaneCoefficients(oneGridNode, twoGridNode, threeGridNode);
 
 		int sideTriangleCenter = definePlaneSide(triangleCenter);
-		int sideDefect = definePlaneSide(centerDefect);
+		int sideDefect = definePlaneSide(defectCenter);
 		if (sideDefect != sideTriangleCenter && sideDefect != 0) {
-			Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
-			Node centerDefectPlaneNode = definePerpendicularPlaneNode(centerDefect);
-
-			double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
-			double centerDefectDistance = calculateDistance(centerDefect, centerDefectPlaneNode);
-			double sum = centerDefectDistance + triangleCenterDistance;
-			double multiplier = triangleCenterDistance / sum;
-			Node nodeVector = defineNodeVector(triangleCenter, centerDefect);
-			Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
-			Node planeNode = sumNodes(triangleCenter, cuttedNodeVector);
-
+			Node planeNode = definePlaneNode(triangleCenter);
 			if (isBelongToPlane(planeNode)) {
 				double distancePartOne = calculateDistance(triangleCenter, planeNode);
-				double distancePartTwo = calculateDistance(centerDefect, planeNode);
+				double distancePartTwo = calculateDistance(defectCenter, planeNode);
 				if (distancePartOne < distance && distancePartTwo < distance) {
 					cout << ": " << i;
+					int status = defineAccessoryStatusOfNode(planeNode, oneGridNode, twoGridNode, threeGridNode);
+					if (status != -1) {
+						cout << "!!!";
+						triangle.tetrahedron->nodesNumbers[0] = internalGrid[i].nodesNumbers[status];
+						break;
+					}
 				}
 			}
 		}
@@ -241,6 +298,35 @@ void GridConnector::writeGridInGidFile() {
 		currentNumber++;
 		Triangle triangle = externalGrid[i];
 		file << currentNumber << ' ' << triangle.nodesNumbers[0] << ' ' << triangle.nodesNumbers[1] << ' ' << triangle.nodesNumbers[2] << " 2\n";
+	}
+	file << "end elements";
+
+	file.close();
+}
+
+void GridConnector::writeGidFile() {
+	ofstream file("GidEmptyZoneResult.txt");
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+	file << "mesh dimension = 3 elemtype tetrahedra nnode = 4\ncoordinates\n";
+	for (int i = 1; i < nodes.size(); i++) {
+		Node node = nodes[i];
+		file << node.number << " " << node.x << ' ' << node.y << ' ' << node.z << '\n';
+	}
+	file << "end coordinates\nelements\n";
+	int number = 0;
+	while (currentTetrahedron != end) {
+		if (currentTetrahedron->nodesNumbers[0] != -1) {
+			number++;
+			file << number;
+			for (int i = 0; i < 4; i++) {
+				file << ' ' << currentTetrahedron->nodesNumbers[i];
+			}
+
+			file << " 1\n";
+		}
+
+		currentTetrahedron++;
 	}
 	file << "end elements";
 
