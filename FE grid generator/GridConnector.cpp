@@ -135,7 +135,7 @@ Node GridConnector::defineVector(Node one, Node two) {
 	return node;
 }
 
-Node GridConnector::cutNodeVector(Node nodeVector, double multiplier) {
+Node GridConnector::multiplyNodeVector(Node nodeVector, double multiplier) {
 	nodeVector.x = nodeVector.x * multiplier;
 	nodeVector.y = nodeVector.y * multiplier;
 	nodeVector.z = nodeVector.z * multiplier;
@@ -202,18 +202,18 @@ Node GridConnector::defineTriangleCenterNode(Triangle triangle) {
 	return triangleCenter;
 }
 
-Node GridConnector::definePlaneNode(Node triangleCenter) {
+Node GridConnector::defineTopPlaneNode(Node triangleCenter) {
 	Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
-	Node centerDefectPlaneNode = definePerpendicularPlaneNode(defectCenter);
+	Node defectCenterPlaneNode = definePerpendicularPlaneNode(defectCenter);
 
 	double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
-	double centerDefectDistance = calculateDistance(defectCenter, centerDefectPlaneNode);
-	double sum = centerDefectDistance + triangleCenterDistance;
+	double defectCenterDistance = calculateDistance(defectCenter, defectCenterPlaneNode);
+	double sum = defectCenterDistance + triangleCenterDistance;
 	double multiplier = triangleCenterDistance / sum;
 	Node nodeVector = defineVector(triangleCenter, defectCenter);
-	Node cuttedNodeVector = cutNodeVector(nodeVector, multiplier);
+	Node multipliedNodeVector = multiplyNodeVector(nodeVector, multiplier);
 
-	return sumNodes(triangleCenter, cuttedNodeVector);
+	return sumNodes(triangleCenter, multipliedNodeVector);
 }
 
 int GridConnector::defineAccessoryStatusOfNode(Node planeNode, Node A, Node B, Node C) {
@@ -248,7 +248,7 @@ void GridConnector::defineTop(Triangle triangle) {
 		int sideTriangleCenter = definePlaneSide(triangleCenter);
 		int sideDefect = definePlaneSide(defectCenter);
 		if (sideDefect != sideTriangleCenter && sideDefect != 0) {
-			Node planeNode = definePlaneNode(triangleCenter);
+			Node planeNode = defineTopPlaneNode(triangleCenter);
 			if (isBelongToPlane(planeNode)) {
 				double distancePartOne = calculateDistance(triangleCenter, planeNode);
 				double distancePartTwo = calculateDistance(defectCenter, planeNode);
@@ -275,10 +275,53 @@ void GridConnector::raiseTetrahedrons() {
 	}
 }
 
+Node GridConnector::defineBotPlaneNode(Node triangleCenter, double distance) {
+	Node triangleCenterPlaneNode = definePerpendicularPlaneNode(triangleCenter);
+	Node defectCenterPlaneNode = definePerpendicularPlaneNode(defectCenter);
+
+	double triangleCenterDistance = calculateDistance(triangleCenter, triangleCenterPlaneNode);
+	double defectCenterDistance = calculateDistance(defectCenter, defectCenterPlaneNode);
+	double triangleCenterToPlaneNodeDistance = -distance * triangleCenterDistance / (triangleCenterDistance - defectCenterDistance);
+	double sum = distance + triangleCenterToPlaneNodeDistance;
+	double multiplier = sum / distance;
+	Node nodeVector = defineVector(defectCenter, triangleCenter);
+	Node multipliedNodeVector = multiplyNodeVector(nodeVector, multiplier);
+
+	return sumNodes(defectCenter, multipliedNodeVector);
+}
+
+void GridConnector::defineBot(Triangle triangle) {
+	Node triangleCenter = defineTriangleCenterNode(triangle);
+	double distance = calculateDistance(triangleCenter, defectCenter);
+	for (int i = 1; i < externalGrid.size(); i++) {
+		Node oneGridNode = nodes[externalGrid[i].nodesNumbers[0]];
+		Node twoGridNode = nodes[externalGrid[i].nodesNumbers[1]];
+		Node threeGridNode = nodes[externalGrid[i].nodesNumbers[2]];
+		definePlaneCoefficients(oneGridNode, twoGridNode, threeGridNode);
+
+		Node planeNode = defineBotPlaneNode(triangleCenter, distance);
+		if (isBelongToPlane(planeNode)) {
+			double distancePartOne = calculateDistance(triangleCenter, planeNode);
+			double distancePartTwo = calculateDistance(defectCenter, planeNode);
+			if (distancePartOne < distancePartTwo && distance < distancePartTwo) {
+				cout << ": " << i;
+				int status = defineAccessoryStatusOfNode(planeNode, oneGridNode, twoGridNode, threeGridNode);
+				if (status != -1) {
+					cout << "!!!";
+					triangle.tetrahedron->nodesNumbers[0] = externalGrid[i].nodesNumbers[status];
+					break;
+				}
+			}
+		}
+	}
+}
+
 void GridConnector::omitTetrahedrons() {
 	for (int i = 1; i < internalGrid.size(); i++) {
 		Triangle triangle = internalGrid[i];
 		createRibs(triangle, internalRibs);
+		cout << "\n\n" << i;
+		defineBot(triangle);
 	}
 }
 
