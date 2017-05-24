@@ -64,10 +64,10 @@ int GridConnector::getIncrementedIndex(int index) {
 	return index;
 }
 
-bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers) {
-	for (int i = 0; i < externalRibs.size(); i++) {
-		if (externalRibs[i].nodesNumbers[0] == nodesNumbers[1] && externalRibs[i].nodesNumbers[1] == nodesNumbers[0]) {
-			externalRibs[i].neighbours.push_back(triangle.tetrahedron);
+bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers, vector<Rib> &ribs) {
+	for (int i = 0; i < ribs.size(); i++) {
+		if (ribs[i].nodesNumbers[0] == nodesNumbers[1] && ribs[i].nodesNumbers[1] == nodesNumbers[0]) {
+			ribs[i].neighbours.push_back(triangle.tetrahedron);
 			triangle.tetrahedron->ribs.push_back(i);
 			return true;
 		}
@@ -76,21 +76,21 @@ bool GridConnector::isRibExist(Triangle triangle, vector<int> nodesNumbers) {
 	return false;
 }
 
-void GridConnector::createExternalRibs(Triangle triangle) {
+void GridConnector::createRibs(Triangle triangle, vector<Rib> &ribs) {
 	for (int i = 0; i < 3; i++) {
 		vector<int> nodesNumbers;
 		nodesNumbers.push_back(triangle.nodesNumbers[i]);
 		nodesNumbers.push_back(triangle.nodesNumbers[getIncrementedIndex(i)]);
 
-		if (!isRibExist(triangle, nodesNumbers)) {
+		if (!isRibExist(triangle, nodesNumbers, ribs)) {
 			Rib rib;
 			rib.isEmptyArea = true;
 			for (int j = 0; j < 2; j++) {
 				rib.nodesNumbers.push_back(nodesNumbers[j]);
 			}
 			rib.neighbours.push_back(triangle.tetrahedron);
-			externalRibs.push_back(rib);
-			triangle.tetrahedron->ribs.push_back(externalRibs.size() - 1);
+			ribs.push_back(rib);
+			triangle.tetrahedron->ribs.push_back(ribs.size() - 1);
 		}
 	}
 }
@@ -269,9 +269,16 @@ void GridConnector::defineTop(Triangle triangle) {
 void GridConnector::raiseTetrahedrons() {
 	for (int i = 1; i < externalGrid.size(); i++) {
 		Triangle triangle = externalGrid[i];
-		createExternalRibs(triangle);
+		createRibs(triangle, externalRibs);
 		cout << '\n' << i;
 		defineTop(triangle);
+	}
+}
+
+void GridConnector::omitTetrahedrons() {
+	for (int i = 1; i < internalGrid.size(); i++) {
+		Triangle triangle = internalGrid[i];
+		createRibs(triangle, internalRibs);
 	}
 }
 
@@ -279,6 +286,7 @@ void GridConnector::createTetrahedrons() {
 	addEmptyTetrahedrons();
 	addBasisAndConnections();
 	raiseTetrahedrons();
+	omitTetrahedrons();
 }
 
 void GridConnector::writeGridInGidFile() {

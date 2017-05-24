@@ -11,6 +11,7 @@ class GridConnector {
 	double planeA, planeB, planeC, planeD;
 	vector<Node> nodes;
 	vector<Rib> externalRibs;
+	vector<Rib> internalRibs;
 	vector<Node> internalNodes;
 	vector<Triangle> externalGrid;
 	vector<Triangle> internalGrid;
@@ -29,8 +30,8 @@ private:
 	void addEmptyTetrahedrons();
 	void addBasisAndConnections();
 	int getIncrementedIndex(int index);
-	bool isRibExist(Triangle triangle, vector<int> nodesNumbers);
-	void createExternalRibs(Triangle triangle);
+	bool isRibExist(Triangle triangle, vector<int> nodesNumbers, vector<Rib> &ribs);
+	void createRibs(Triangle triangle, vector<Rib> &ribs);
 	void definePlaneCoefficients(Node one, Node two, Node three);
 	Node definePerpendicularPlaneNode(Node triangleCenter);
 	double calculateDistance(Node one, Node two);
@@ -46,4 +47,5 @@ private:
 	int defineAccessoryStatusOfNode(Node planeNode, Node A, Node B, Node C);
 	void defineTop(Triangle triangle);
 	void raiseTetrahedrons();
+	void omitTetrahedrons();
 };
