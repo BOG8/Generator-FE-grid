@@ -50,4 +50,6 @@ private:
 	Node defineBotPlaneNode(Node triangleCenter, double distance);
 	void defineBot(Triangle triangle);
 	void omitTetrahedrons();
+	void deleteRibsWithoutEmptyAreas(vector<Rib> &vector);
+	void fillEmptyAreas();
 };

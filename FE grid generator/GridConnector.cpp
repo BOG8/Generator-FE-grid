@@ -325,11 +325,28 @@ void GridConnector::omitTetrahedrons() {
 	}
 }
 
+void GridConnector::deleteRibsWithoutEmptyAreas(vector<Rib> &vector) {
+	for (int i = 0; i < vector.size(); i++) {
+		int numberOne = vector[i].neighbours[0]->nodesNumbers[0];
+		int numberTwo = vector[i].neighbours[1]->nodesNumbers[0];
+		if (numberOne == numberTwo) {
+			vector.erase(vector.begin() + i);
+			i--;
+		}
+	}
+}
+
+void GridConnector::fillEmptyAreas() {
+	deleteRibsWithoutEmptyAreas(externalRibs);
+	deleteRibsWithoutEmptyAreas(internalRibs);
+}
+
 void GridConnector::createTetrahedrons() {
 	addEmptyTetrahedrons();
 	addBasisAndConnections();
 	raiseTetrahedrons();
 	omitTetrahedrons();
+	fillEmptyAreas();
 }
 
 void GridConnector::writeGridInGidFile() {
