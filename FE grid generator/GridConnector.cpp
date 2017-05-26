@@ -336,9 +336,45 @@ void GridConnector::deleteRibsWithoutEmptyAreas(vector<Rib> &vector) {
 	}
 }
 
+void GridConnector::createTetrahedronsFromRibsToRibs(vector<Rib> &v1, vector<Rib> &v2) {
+	for (int i = 0; i < v1.size(); i++) {
+		if (v1[i].isEmptyArea == true) {
+			int v1Vertex1 = v1[i].neighbours[0]->nodesNumbers[0];
+			int v1Vertex2 = v1[i].neighbours[1]->nodesNumbers[0];
+			for (int j = 0; j < v2.size(); j++) {
+				if (v2[j].isEmptyArea == true) {
+					int v2Number1 = v2[j].nodesNumbers[0];
+					int v2Number2 = v2[j].nodesNumbers[1];
+					if ((v1Vertex1 == v2Number1 && v1Vertex2 == v2Number2) || 
+						(v1Vertex1 == v2Number2 && v1Vertex2 == v2Number1)) {
+						Tetrahedron tetrahedron;
+						tetrahedron.nodesNumbers.push_back(v1[i].nodesNumbers[0]);
+						tetrahedron.nodesNumbers.push_back(v1[i].nodesNumbers[1]);
+						tetrahedron.nodesNumbers.push_back(v2Number1);
+						tetrahedron.nodesNumbers.push_back(v2Number2);
+						tetrahedrons.push_back(tetrahedron);
+						v1[i].isEmptyArea = false;
+						int v1Number1 = v1[i].nodesNumbers[0];
+						int v1Number2 = v1[i].nodesNumbers[1];
+						int v2Vertex1 = v2[j].neighbours[0]->nodesNumbers[0];
+						int v2Vertex2 = v2[j].neighbours[1]->nodesNumbers[0];
+						if ((v1Number1 == v2Vertex1 && v1Number2 == v2Vertex2) || 
+							(v1Number1 == v2Vertex2 && v1Number2 == v2Vertex1)) {
+							v2[j].isEmptyArea = false;
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void GridConnector::fillEmptyAreas() {
 	deleteRibsWithoutEmptyAreas(externalRibs);
 	deleteRibsWithoutEmptyAreas(internalRibs);
+	createTetrahedronsFromRibsToRibs(externalRibs, internalRibs);
+	createTetrahedronsFromRibsToRibs(internalRibs, externalRibs);
 }
 
 void GridConnector::createTetrahedrons() {

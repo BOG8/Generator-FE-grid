@@ -51,5 +51,6 @@ private:
 	void defineBot(Triangle triangle);
 	void omitTetrahedrons();
 	void deleteRibsWithoutEmptyAreas(vector<Rib> &vector);
+	void createTetrahedronsFromRibsToRibs(vector<Rib> &vectorOne, vector<Rib> &vectorTwo);
 	void fillEmptyAreas();
 };
