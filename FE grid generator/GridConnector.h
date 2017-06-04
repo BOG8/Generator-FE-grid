@@ -53,4 +53,8 @@ private:
 	void deleteRibsWithoutEmptyAreas(vector<Rib> &vector);
 	void createTetrahedronsFromRibsToRibs(vector<Rib> &vectorOne, vector<Rib> &vectorTwo);
 	void fillEmptyAreas();
+	bool isVectorContainsNumber(vector<int> vector, int number);
+	void fillVectorOfNodesNumbers(vector<int> &curNodesNumbers, Tetrahedron tetr, int index);
+	void createConnections(list<Tetrahedron>::iterator currentTetrahedron, list<Tetrahedron>::iterator end);
+	void createConnectionsForAllTetrahedrons();
 };

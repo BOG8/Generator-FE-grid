@@ -352,6 +352,9 @@ void GridConnector::createTetrahedronsFromRibsToRibs(vector<Rib> &v1, vector<Rib
 						tetrahedron.nodesNumbers.push_back(v1[i].nodesNumbers[1]);
 						tetrahedron.nodesNumbers.push_back(v2Number1);
 						tetrahedron.nodesNumbers.push_back(v2Number2);
+						for (int j = 0; j < 4; j++) {
+							tetrahedron.neighbours.push_back(0);
+						}
 						tetrahedrons.push_back(tetrahedron);
 						v1[i].isEmptyArea = false;
 						int v1Number1 = v1[i].nodesNumbers[0];
@@ -377,12 +380,82 @@ void GridConnector::fillEmptyAreas() {
 	createTetrahedronsFromRibsToRibs(internalRibs, externalRibs);
 }
 
+bool GridConnector::isVectorContainsNumber(vector<int> vector, int number) {
+	for (int i = 0; i < vector.size(); i++) {
+		if (vector[i] == number) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void GridConnector::fillVectorOfNodesNumbers(vector<int> &curNodesNumbers, Tetrahedron tetr, int index) {
+	for (int i = 0; i < 4; i++) {
+		if (i != index) {
+			curNodesNumbers.push_back(tetr.nodesNumbers[i]);
+		}
+	}
+}
+
+void GridConnector::createConnections(list<Tetrahedron>::iterator currentTetrahedron, list<Tetrahedron>::iterator end) {
+	for (int i = 0; i < 4; i++) {
+		if (currentTetrahedron->neighbours[i] == 0) {
+			vector<int> curNodesNumbers;
+			fillVectorOfNodesNumbers(curNodesNumbers, *currentTetrahedron, i);
+			list<Tetrahedron>::iterator itTetrahedron = currentTetrahedron;
+			itTetrahedron++;
+			while (itTetrahedron != end) {
+				vector<bool> containVector;
+				int matchCount = 0;
+				for (int j = 0; j < 4; j++) {
+					containVector.push_back(isVectorContainsNumber(curNodesNumbers, itTetrahedron->nodesNumbers[j]));
+					if (containVector[j]) {
+						matchCount++;
+					}
+				}
+				if (matchCount == 3) {
+					bool exitKey = false;
+					for (int j = 0; j < 4; j++) {
+						if (!containVector[j]) {
+							currentTetrahedron->neighbours[i] = &(*itTetrahedron);
+							itTetrahedron->neighbours[j] = &(*currentTetrahedron);
+							exitKey = true;
+							break;
+						}
+					}
+					if (exitKey) {
+						break;
+					}
+				}
+
+				itTetrahedron++;
+			}
+		}
+	}
+}
+
+void GridConnector::createConnectionsForAllTetrahedrons() {
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+	int ww = 0;
+
+	while (currentTetrahedron != end) {
+		ww++;
+		cout << "\n" << ww;
+		createConnections(currentTetrahedron, end);
+		currentTetrahedron++;
+	}
+}
+
 void GridConnector::createTetrahedrons() {
 	addEmptyTetrahedrons();
 	addBasisAndConnections();
 	raiseTetrahedrons();
 	omitTetrahedrons();
 	fillEmptyAreas();
+	createConnectionsForAllTetrahedrons();
+
 }
 
 void GridConnector::writeGridInGidFile() {
