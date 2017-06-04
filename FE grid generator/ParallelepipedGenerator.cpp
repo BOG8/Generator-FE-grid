@@ -115,6 +115,20 @@ void ParallelepipedGenerator::transferAllNodes() {
 	}
 }
 
+void ParallelepipedGenerator::transferInternalNodes() {
+	for (int k = 1; k < zStepsNumber; k++) {
+		for (int j = 1; j < yStepsNumber; j++) {
+			for (int i = 1; i < xStepsNumber; i++) {
+				Node node;
+				node = arrayOfNodes[i][j][k];
+				if (node.number != -1) {
+					internalNodes.push_back(node);
+				}
+			}
+		}
+	}
+}
+
 void ParallelepipedGenerator::createTriangles0ZY() {
 	for (int i = 0; i < zStepsNumber; i++) {
 		for (int j = 0; j < yStepsNumber; j++) {
@@ -403,6 +417,10 @@ void ParallelepipedGenerator::createInternalGrid() {
 
 vector<Node> ParallelepipedGenerator::getNodes() {
 	return nodes;
+}
+
+vector<Node> ParallelepipedGenerator::getInternalNodes() {
+	return internalNodes;
 }
 
 vector<Triangle> ParallelepipedGenerator::getGrid() {

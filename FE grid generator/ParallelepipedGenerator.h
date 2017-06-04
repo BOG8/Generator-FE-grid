@@ -16,6 +16,7 @@ class ParallelepipedGenerator {
 	Node ***arrayOfNodes;
 	vector<Triangle> internalGrid;
 	vector<Node> nodes;
+	vector<Node> internalNodes;
 
 public:
 	ParallelepipedGenerator();
@@ -26,9 +27,11 @@ public:
 	void correctAllSteps();
 	void createNodes(string fileName);
 	void transferAllNodes();
+	void transferInternalNodes();
 	void createInternalGrid();
 
 	vector<Node> getNodes();
+	vector<Node> getInternalNodes();
 	vector<Triangle> getGrid();
 
 private:
@@ -52,4 +55,6 @@ private:
 	void createExternalConnections0Y0();
 	void createExternalConnections();
 	void createConnections();
+
+	void createInternalNodes();
 };

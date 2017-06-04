@@ -24,6 +24,7 @@ void ProcessManager::runParallelepipedGenerator() {
 	parallelepipedGenerator.correctAllSteps();
 	parallelepipedGenerator.createNodes(ELLIPSOID_PROPERTIES);
 	parallelepipedGenerator.transferAllNodes();
+	parallelepipedGenerator.transferInternalNodes();
 	parallelepipedGenerator.createInternalGrid();
 }
 
@@ -34,8 +35,8 @@ void ProcessManager::runGridConnector() {
 		nodes.push_back(otherNodes[i]);
 	}
 	otherNodes.clear();
-	vector<Node> emptyVector;
-	gridConnector.setData(nodes, emptyVector, parallelepipedGenerator.getGrid(), ellipsoidGenerator.getGrid(), ellipsoidGenerator.getDefect());
+	vector<Node> internalNodes = parallelepipedGenerator.getInternalNodes();
+	gridConnector.setData(nodes, internalNodes, parallelepipedGenerator.getGrid(), ellipsoidGenerator.getGrid(), ellipsoidGenerator.getDefect());
 	gridConnector.createTetrahedrons();
 	gridConnector.writeGridInGidFile();
 	gridConnector.writeGidFile();
