@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DeloneRebuilder.h" />
     <ClInclude Include="EllipsoidGenerator.h" />
     <ClInclude Include="GridConnector.h" />
     <ClInclude Include="Node.h" />
@@ -93,6 +94,7 @@
     <Text Include="Result.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DeloneRebuilder.cpp" />
     <ClCompile Include="EllipsoidGenerator.cpp" />
     <ClCompile Include="GridConnector.cpp" />
     <ClCompile Include="main.cpp" />
