@@ -42,8 +42,14 @@ void ProcessManager::runGridConnector() {
 	gridConnector.writeGidFile();
 }
 
+void ProcessManager::runDeloneRebuilder() {
+	deloneRebuilder.setNodes(gridConnector.getNodes());
+	deloneRebuilder.rebuild(gridConnector.getTetrahedrons());
+}
+
 void ProcessManager::run() {
 	runEllipsoidGenerator();
 	runParallelepipedGenerator();
 	runGridConnector();
+	runDeloneRebuilder();
 }

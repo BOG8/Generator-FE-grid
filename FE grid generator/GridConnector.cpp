@@ -448,6 +448,62 @@ void GridConnector::createConnectionsForAllTetrahedrons() {
 	}
 }
 
+double GridConnector::defineDeterminant3spc(Node N1, Node N2, Node N3) {
+	return N1.y * N2.z + N1.z * N3.y + N2.y * N3.z - N2.z* N3.y - N1.y * N3.z - N1.z * N2.y;
+}
+
+double GridConnector::defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4) {
+	return N1.x * defineDeterminant3spc(N2, N3, N4) - N2.x * defineDeterminant3spc(N1, N3, N4) +
+		N3.x * defineDeterminant3spc(N1, N2, N4) - N4.x * defineDeterminant3spc(N1, N2, N3);
+}
+
+bool GridConnector::isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr) {
+	Node N1 = nodes[tetr.nodesNumbers[0]];
+	Node N2 = nodes[tetr.nodesNumbers[1]];
+	Node N3 = nodes[tetr.nodesNumbers[2]];
+	Node N4 = nodes[tetr.nodesNumbers[3]];
+	//double D0 = defineDeterminant4spc(N1, N2, N3, N4);
+	//double D1 = defineDeterminant4spc(node, N2, N3, N4);
+	//double D2 = defineDeterminant4spc(N1, node, N3, N4);
+	//double D3 = defineDeterminant4spc(N1, N2, node, N4);
+	//double D4 = defineDeterminant4spc(N1, N2, N3, node);
+
+	//if ((D0 > 0 && D1 > 0 && D2 > 0 && D3 > 0 && D4 > 0) || 
+	//	(D0 < 0 && D1 < 0 && D2 < 0 && D3 < 0 && D4 < 0)) {
+	//	return true;
+	//}
+	definePlaneCoefficients(N1, N3, N2);
+	int one = definePlaneSide(node);
+	definePlaneCoefficients(N1, N2, N4);
+	int two = definePlaneSide(node);
+	definePlaneCoefficients(N1, N4, N3);	
+	int three = definePlaneSide(node);
+	definePlaneCoefficients(N2, N3, N4);	
+	int four = definePlaneSide(node);
+
+	if ((one >= 0 && two >= 0 && three >= 0 && four >= 0) ||
+		(one <= 0 && two <= 0 && three <= 0 && four <= 0)) {
+		return true;
+	}
+
+	return false;
+}
+
+void GridConnector::addInternalNodesToTriangulation() {
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+
+	for (int i = 0; i < internalNodes.size(); i++) {
+		list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+		while (currentTetrahedron != end) {
+			if (isNodeBelongsToTetrahedron(internalNodes[i], *currentTetrahedron)) {
+				cout << "\n" << i << ": XD";
+			}
+
+			currentTetrahedron++;
+		}
+	}
+}
+
 void GridConnector::createTetrahedrons() {
 	addEmptyTetrahedrons();
 	addBasisAndConnections();
@@ -455,7 +511,7 @@ void GridConnector::createTetrahedrons() {
 	omitTetrahedrons();
 	fillEmptyAreas();
 	createConnectionsForAllTetrahedrons();
-
+	//addInternalNodesToTriangulation();
 }
 
 void GridConnector::writeGridInGidFile() {
@@ -508,4 +564,12 @@ void GridConnector::writeGidFile() {
 	file << "end elements";
 
 	file.close();
+}
+
+vector<Node> GridConnector::getNodes() {
+	return nodes;
+}
+
+list<Tetrahedron>* GridConnector::getTetrahedrons() {
+	return &tetrahedrons;
 }

@@ -25,6 +25,8 @@ public:
 	void createTetrahedrons();
 	void writeGridInGidFile();
 	void writeGidFile();
+	vector<Node> getNodes();
+	list<Tetrahedron>* getTetrahedrons();
 
 private:
 	void addEmptyTetrahedrons();
@@ -57,4 +59,8 @@ private:
 	void fillVectorOfNodesNumbers(vector<int> &curNodesNumbers, Tetrahedron tetr, int index);
 	void createConnections(list<Tetrahedron>::iterator currentTetrahedron, list<Tetrahedron>::iterator end);
 	void createConnectionsForAllTetrahedrons();
+	double defineDeterminant3spc(Node N1, Node N2, Node N3);
+	double defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4);
+	bool isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr);
+	void addInternalNodesToTriangulation();
 };

@@ -4,6 +4,7 @@
 
 class DeloneRebuilder {
 	Tetrahedron tetrahedrons;
+	vector<Node> nodes;
 	double planeA, planeB, planeC, planeD;
 
 
@@ -11,7 +12,8 @@ public:
 	DeloneRebuilder();
 	~DeloneRebuilder();
 
-	void rebuild(list<Tetrahedron> &tetrahedrons);
+	void rebuild(list<Tetrahedron> *tetrahedrons);
+	void setNodes(vector<Node> nodes);
 
 private:
 	double calculateDistance(Node N1, Node N2);
