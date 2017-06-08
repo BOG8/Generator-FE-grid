@@ -45,9 +45,9 @@ bool ParallelepipedGenerator::isBelongsToEllipsoid(Node node) {
 	double diffX = node.x - ellipsoidGenerator.getX();
 	double diffY = node.y - ellipsoidGenerator.getY();
 	double diffZ = node.z - ellipsoidGenerator.getZ();
-	double fractionX = pow(diffX, 2) / ellipsoidGenerator.getA();
-	double fractionY = pow(diffY, 2) / ellipsoidGenerator.getB();
-	double fractionZ = pow(diffZ, 2) / ellipsoidGenerator.getC();
+	double fractionX = pow(diffX, 2) / pow(ellipsoidGenerator.getA(), 2);
+	double fractionY = pow(diffY, 2) / pow(ellipsoidGenerator.getB(), 2);
+	double fractionZ = pow(diffZ, 2) / pow(ellipsoidGenerator.getC(), 2);
 	double result = fractionX + fractionY + fractionZ;
 
 	return result <= 1.00000001;
@@ -137,12 +137,14 @@ void ParallelepipedGenerator::createTriangles0ZY() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i + 1].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[0][j][i + 1].number);
 			internalGrid.push_back(triangleOne);
+			grid0YZ.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j][i].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[0][j + 1][i + 1].number);
 			internalGrid.push_back(triangleTwo);
+			grid0YZ.push_back(triangleTwo);
 		}
 	}
 }
@@ -173,12 +175,14 @@ void ParallelepipedGenerator::createTrianglesMZY() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i - 1].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j][i - 1].number);
 			internalGrid.push_back(triangleOne);
+			gridMYZ.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j][i].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[xStepsNumber][j + 1][i - 1].number);
 			internalGrid.push_back(triangleTwo);
+			gridMYZ.push_back(triangleTwo);
 		}
 	}
 }
@@ -413,6 +417,32 @@ void ParallelepipedGenerator::createConnections() {
 void ParallelepipedGenerator::createInternalGrid() {
 	createTriangles();
 	createConnections();
+}
+
+void ParallelepipedGenerator::writeAneuFile() {
+	ofstream file("aneuFileResult.txt", ios_base::app);
+
+	int size0 = grid0YZ.size();
+	int sizeM = gridMYZ.size();
+	file << size0 + sizeM << " 3\n";
+
+	for (int i = 0; i < size0; i++) {
+		file << "12";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << grid0YZ[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+
+	for (int i = 0; i < sizeM; i++) {
+		file << "11";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << gridMYZ[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+
+	file.close();
 }
 
 vector<Node> ParallelepipedGenerator::getNodes() {

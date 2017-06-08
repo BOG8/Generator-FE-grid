@@ -38,6 +38,7 @@ public:
 	void writeNodesInFile(string fileName);
 	void writeTetrahedronsInFile(string fileName);
 	void writeGidFile();
+	void writeAneuFile();
 	int getMaxNumber();
 	double getA();
 	double getB();

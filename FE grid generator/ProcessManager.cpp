@@ -51,5 +51,9 @@ void ProcessManager::run() {
 	runEllipsoidGenerator();
 	runParallelepipedGenerator();
 	runGridConnector();
-	runDeloneRebuilder();
+	//runDeloneRebuilder();
+
+	gridConnector.writeAneuFile();
+	ellipsoidGenerator.writeAneuFile();
+	parallelepipedGenerator.writeAneuFile();
 }

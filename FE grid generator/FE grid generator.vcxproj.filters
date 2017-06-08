@@ -59,6 +59,9 @@
     <Text Include="GidEmptyZoneResult.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="aneuFileResult.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EllipsoidGenerator.cpp">

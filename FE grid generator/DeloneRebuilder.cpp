@@ -1,5 +1,6 @@
 #include "DeloneRebuilder.h"
 #include <iostream>
+#include <fstream>
 
 DeloneRebuilder::DeloneRebuilder() {
 

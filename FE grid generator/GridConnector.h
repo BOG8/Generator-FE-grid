@@ -27,6 +27,7 @@ public:
 	void writeGidFile();
 	vector<Node> getNodes();
 	list<Tetrahedron>* getTetrahedrons();
+	void writeAneuFile();
 
 private:
 	void addEmptyTetrahedrons();

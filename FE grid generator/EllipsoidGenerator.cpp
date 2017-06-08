@@ -773,6 +773,26 @@ void EllipsoidGenerator::writeGidFile() {
 	file.close();
 }
 
+void EllipsoidGenerator::writeAneuFile() {
+	ofstream file("aneuFileResult.txt", ios_base::app);
+
+	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
+	list<Tetrahedron>::iterator end = tetrahedrons.end();
+	while (currentTetrahedron != end) {
+		file << '2';
+		for (int i = 0; i < 4; i++) {
+			file << ' ' << currentTetrahedron->nodesNumbers[i];
+		}
+		file << "\n";
+
+		currentTetrahedron++;
+	}
+
+	file << '\n';
+
+	file.close();
+}
+
 int EllipsoidGenerator::getMaxNumber() {
 	return maxNumber;
 }

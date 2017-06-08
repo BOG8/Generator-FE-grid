@@ -87,6 +87,7 @@
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="aneuFileResult.txt" />
     <Text Include="EllipsoidProperties.txt" />
     <Text Include="GidEmptyZoneResult.txt" />
     <Text Include="GridResult.txt" />

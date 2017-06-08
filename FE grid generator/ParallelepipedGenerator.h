@@ -17,6 +17,8 @@ class ParallelepipedGenerator {
 	vector<Triangle> internalGrid;
 	vector<Node> nodes;
 	vector<Node> internalNodes;
+	vector<Triangle> grid0YZ;
+	vector<Triangle> gridMYZ;
 
 public:
 	ParallelepipedGenerator();
@@ -29,6 +31,7 @@ public:
 	void transferAllNodes();
 	void transferInternalNodes();
 	void createInternalGrid();
+	void writeAneuFile();
 
 	vector<Node> getNodes();
 	vector<Node> getInternalNodes();
