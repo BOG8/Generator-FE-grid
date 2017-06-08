@@ -29,4 +29,6 @@ private:
 	bool isNeedToRebuild(Node V1, Node V2, Node M1, Node M2, Node M3);
 
 	void defineNodesNumbersAndIndexes(int &V1, int &V2, vector<int> &mVect, vector<int> &mTVect, vector<int> &mBVect, Tetrahedron* tetr1, Tetrahedron* tetr2);
+	int defineIndexFromDifferentNode(Tetrahedron* tetr, int N1, int N2, int N3, int N4);
+	void createInternalConnections(vector<Tetrahedron*> tetrs);
 };

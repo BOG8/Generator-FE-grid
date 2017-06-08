@@ -1,4 +1,5 @@
 #include "DeloneRebuilder.h"
+#include <iostream>
 
 DeloneRebuilder::DeloneRebuilder() {
 
@@ -31,11 +32,11 @@ bool DeloneRebuilder::isDeloneCondition(Node N1, Node N2, Node N3, Node N4, Node
 	center.z = C;
 	double distance = calculateDistance(center, P);
 
-	if (distance >= R) {
-		return true;
+	if (distance < R) {
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 void DeloneRebuilder::definePlaneCoefficients(Node one, Node two, Node three) {
@@ -112,7 +113,7 @@ bool DeloneRebuilder::isAccessory(Node planeNode, Node A, Node B, Node C) {
 	double gamma = defineABSCrossProduct(vectorPA, vectorPB) / (2 * areaABC);
 	double zero = abs(alfa + beta + gamma - 1);
 
-	if (alfa > 0 && alfa < 1 && beta > 0 && beta < 1 && gamma > 0 && gamma < 1 && zero < 0.000001) {
+	if (alfa > 0.0000001 && alfa < 0.9999999 && beta > 0.0000001 && beta < 0.9999999 && gamma > 0.0000001 && gamma < 0.9999999 && zero < 0.000001) {
 		return true;
 	}
 
@@ -167,6 +168,54 @@ void DeloneRebuilder::defineNodesNumbersAndIndexes(int &V1, int &V2, vector<int>
 	}
 }
 
+int DeloneRebuilder::defineIndexFromDifferentNode(Tetrahedron* tetr, int N1, int N2, int N3, int N4) {
+	for (int i = 0; i < 4; i++) {
+		int nodeNumb = tetr->nodesNumbers[i];
+		if (nodeNumb != N1 && nodeNumb != N2 && nodeNumb != N3 && nodeNumb != N4) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+void DeloneRebuilder::createInternalConnections(vector<Tetrahedron*> tetrs) {
+	for (int k = 0; k < 3; k++) {
+		int V1 = -1;
+		int V2 = -1;
+		vector<int> mVect;
+		vector<int> mTVect;
+		vector<int> mBVect;
+		int k2 = k + 1;
+		if (k2 == 3) {
+			k2 = 0;
+		}
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (tetrs[k]->nodesNumbers[i] == tetrs[k2]->nodesNumbers[j]) {
+					mVect.push_back(tetrs[k]->nodesNumbers[i]);
+					mTVect.push_back(i);
+					mBVect.push_back(j);
+					break;
+				}
+			}
+		}
+		for (int i = 0; i < 4; i++) {
+			if ((i != mTVect[0]) && (i != mTVect[1]) && (i != mTVect[2])) {
+				V1 = i;
+			}
+		}
+		for (int i = 0; i < 4; i++) {
+			if ((i != mBVect[0]) && (i != mBVect[1]) && (i != mBVect[2])) {
+				V2 = i;
+			}
+		}
+		tetrs[k]->neighbours[V1] = tetrs[k2];
+		tetrs[k2]->neighbours[V2] = tetrs[k];
+	}
+}
+
 void DeloneRebuilder::rebuild(list<Tetrahedron> *tetrahedrons) {
 	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons->begin();
 	list<Tetrahedron>::iterator end = tetrahedrons->end();
@@ -177,6 +226,7 @@ void DeloneRebuilder::rebuild(list<Tetrahedron> *tetrahedrons) {
 	}
 
 	for (int i = 0; i < tetrs.size(); i++) {
+		cout << "\n: q " << i;
 		if (tetrs[i]->neighbours.size() > 0) {
 			for (int j = 0; j < 4; j++) {
 				if (tetrs[i]->neighbours[j] != 0) {
@@ -218,21 +268,45 @@ void DeloneRebuilder::rebuild(list<Tetrahedron> *tetrahedrons) {
 						}
 
 						newTetrs[0]->neighbours.push_back(tetrs[i]->neighbours[j]->neighbours[mBVect[2]]);
+						if (tetrs[i]->neighbours[j]->neighbours[mBVect[2]] != 0) {
+							int newTetrt0Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[j]->neighbours[mBVect[2]], V1Numb, V2Numb, mVect[0], mVect[1]);
+							tetrs[i]->neighbours[j]->neighbours[mBVect[2]]->neighbours[newTetrt0Index] = newTetrs[0];
+						}
 						newTetrs[0]->neighbours.push_back(0);
 						newTetrs[0]->neighbours.push_back(0);
 						newTetrs[0]->neighbours.push_back(tetrs[i]->neighbours[mTVect[2]]);
+						if (tetrs[i]->neighbours[mTVect[2]] != 0) {
+							int newTetrt00Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[mTVect[2]], V1Numb, V2Numb, mVect[0], mVect[1]);
+							tetrs[i]->neighbours[mTVect[2]]->neighbours[newTetrt00Index] = newTetrs[0];
+						}
 
 						newTetrs[1]->neighbours.push_back(tetrs[i]->neighbours[j]->neighbours[mBVect[0]]);
+						if (tetrs[i]->neighbours[j]->neighbours[mBVect[0]] != 0) {
+							int newTetrt1Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[j]->neighbours[mBVect[0]], V1Numb, V2Numb, mVect[1], mVect[2]);
+							tetrs[i]->neighbours[j]->neighbours[mBVect[0]]->neighbours[newTetrt1Index] = newTetrs[1];
+						}
 						newTetrs[1]->neighbours.push_back(0);
 						newTetrs[1]->neighbours.push_back(0);
 						newTetrs[1]->neighbours.push_back(tetrs[i]->neighbours[mTVect[0]]);
+						if (tetrs[i]->neighbours[mTVect[0]] != 0) {
+							int newTetrt11Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[mTVect[0]], V1Numb, V2Numb, mVect[1], mVect[2]);
+							tetrs[i]->neighbours[mTVect[0]]->neighbours[newTetrt11Index] = newTetrs[1];
+						}
 
 						newTetrs[2]->neighbours.push_back(tetrs[i]->neighbours[j]->neighbours[mBVect[1]]);
+						if (tetrs[i]->neighbours[j]->neighbours[mBVect[1]] != 0) {
+							int newTetrt2Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[j]->neighbours[mBVect[1]], V1Numb, V2Numb, mVect[2], mVect[0]);
+							tetrs[i]->neighbours[j]->neighbours[mBVect[1]]->neighbours[newTetrt2Index] = newTetrs[2];
+						}
 						newTetrs[2]->neighbours.push_back(0);
 						newTetrs[2]->neighbours.push_back(0);
 						newTetrs[2]->neighbours.push_back(tetrs[i]->neighbours[mTVect[1]]);
+						if (tetrs[i]->neighbours[mTVect[1]] != 0) {
+							int newTetrt22Index = defineIndexFromDifferentNode(tetrs[i]->neighbours[mTVect[1]], V1Numb, V2Numb, mVect[2], mVect[0]);
+							tetrs[i]->neighbours[mTVect[1]]->neighbours[newTetrt22Index] = newTetrs[2];
+						}
 
-						//createInternalConnections;
+						createInternalConnections(newTetrs);
 
 						tetrs[i]->neighbours[j]->neighbours.clear();
 						tetrs[i]->neighbours[j]->ribs.clear();
