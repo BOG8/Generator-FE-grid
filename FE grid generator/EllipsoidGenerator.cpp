@@ -832,3 +832,7 @@ vector<Triangle> EllipsoidGenerator::getGrid() {
 Node EllipsoidGenerator::getDefect() {
 	return axisZNodes[internalLevel + 1];
 }
+
+int EllipsoidGenerator::getTetrahedronsSize() {
+	return tetrahedrons.size();
+}

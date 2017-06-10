@@ -27,7 +27,7 @@ public:
 	void writeGidFile();
 	vector<Node> getNodes();
 	list<Tetrahedron>* getTetrahedrons();
-	void writeAneuFile();
+	void writeAneuFile(int defectTetrsNumb);
 
 private:
 	void addEmptyTetrahedrons();
@@ -62,6 +62,6 @@ private:
 	void createConnectionsForAllTetrahedrons();
 	double defineDeterminant3spc(Node N1, Node N2, Node N3);
 	double defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4);
-	bool isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr);
+	int isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr);
 	void addInternalNodesToTriangulation();
 };

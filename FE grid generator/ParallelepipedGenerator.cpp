@@ -157,12 +157,14 @@ void ParallelepipedGenerator::createTrianglesMXY() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][j + 1][zStepsNumber].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][j][zStepsNumber].number);
 			internalGrid.push_back(triangleOne);
+			gridMXY.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][zStepsNumber].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][zStepsNumber].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][j + 1][zStepsNumber].number);
 			internalGrid.push_back(triangleTwo);
+			gridMXY.push_back(triangleTwo);
 		}
 	}
 }
@@ -195,12 +197,14 @@ void ParallelepipedGenerator::createTriangles0XY() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][0].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i - 1][j][0].number);
 			internalGrid.push_back(triangleOne);
+			grid0XY.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j][0].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][j + 1][0].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i - 1][j + 1][0].number);
 			internalGrid.push_back(triangleTwo);
+			grid0XY.push_back(triangleTwo);
 		}
 	}
 }
@@ -213,12 +217,14 @@ void ParallelepipedGenerator::createTriangles0XZ() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][0][j + 1].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
 			internalGrid.push_back(triangleOne);
+			grid0XZ.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][0][j].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j + 1].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][0][j].number);
 			internalGrid.push_back(triangleTwo);
+			grid0XZ.push_back(triangleTwo);
 		}
 	}
 }
@@ -231,12 +237,14 @@ void ParallelepipedGenerator::createTrianglesMXZ() {
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j + 1].number);
 			triangleOne.nodesNumbers.push_back(arrayOfNodes[i][yStepsNumber][j + 1].number);
 			internalGrid.push_back(triangleOne);
+			gridMXZ.push_back(triangleOne);
 
 			Triangle triangleTwo;
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i][yStepsNumber][j].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j].number);
 			triangleTwo.nodesNumbers.push_back(arrayOfNodes[i + 1][yStepsNumber][j + 1].number);
 			internalGrid.push_back(triangleTwo);
+			gridMXZ.push_back(triangleTwo);
 		}
 	}
 }
@@ -422,22 +430,50 @@ void ParallelepipedGenerator::createInternalGrid() {
 void ParallelepipedGenerator::writeAneuFile() {
 	ofstream file("aneuFileResult.txt", ios_base::app);
 
-	int size0 = grid0YZ.size();
-	int sizeM = gridMYZ.size();
-	file << size0 + sizeM << " 3\n";
+	int size = grid0YZ.size() + gridMYZ.size() + grid0XZ.size() + gridMXZ.size() + grid0XY.size() + gridMXY.size();
+	file << size << " 3\n";
 
-	for (int i = 0; i < size0; i++) {
+	for (int i = 0; i < grid0YZ.size(); i++) {
 		file << "12";
 		for (int j = 0; j < 3; j++) {
 			file << ' ' << grid0YZ[i].nodesNumbers[j];
 		}
 		file << '\n';
 	}
-
-	for (int i = 0; i < sizeM; i++) {
+	for (int i = 0; i < gridMYZ.size(); i++) {
 		file << "11";
 		for (int j = 0; j < 3; j++) {
 			file << ' ' << gridMYZ[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+
+	for (int i = 0; i < grid0XZ.size(); i++) {
+		file << "22";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << grid0XZ[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+	for (int i = 0; i < gridMXZ.size(); i++) {
+		file << "21";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << gridMXZ[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+
+	for (int i = 0; i < grid0XY.size(); i++) {
+		file << "32";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << grid0XY[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+	for (int i = 0; i < gridMXY.size(); i++) {
+		file << "31";
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << gridMXY[i].nodesNumbers[j];
 		}
 		file << '\n';
 	}

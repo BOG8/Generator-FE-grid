@@ -49,6 +49,7 @@ public:
 	vector<Node> getNodes();
 	vector<Triangle> getGrid();
 	Node getDefect();
+	int getTetrahedronsSize();
 
 private:
 	void allocateMemory();

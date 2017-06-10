@@ -19,6 +19,10 @@ class ParallelepipedGenerator {
 	vector<Node> internalNodes;
 	vector<Triangle> grid0YZ;
 	vector<Triangle> gridMYZ;
+	vector<Triangle> grid0XZ;
+	vector<Triangle> gridMXZ;
+	vector<Triangle> grid0XY;
+	vector<Triangle> gridMXY;
 
 public:
 	ParallelepipedGenerator();

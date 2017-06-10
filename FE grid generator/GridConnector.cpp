@@ -449,7 +449,10 @@ void GridConnector::createConnectionsForAllTetrahedrons() {
 }
 
 double GridConnector::defineDeterminant3spc(Node N1, Node N2, Node N3) {
-	return N1.y * N2.z + N1.z * N3.y + N2.y * N3.z - N2.z* N3.y - N1.y * N3.z - N1.z * N2.y;
+	double plus = (N1.x * N2.y * N3.z) + (N1.y * N2.z * N3.x) + (N1.z * N2.x * N3.y);
+	double minus = -(N1.z * N2.y * N3.x) - (N1.y * N2.x * N3.z) - (N1.x * N2.z * N3.y);
+	return plus * 1000 + minus * 1000;
+	//return N1.y * N2.z + N1.z * N3.y + N2.y * N3.z - N2.z* N3.y - N1.y * N3.z - N1.z * N2.y;
 }
 
 double GridConnector::defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4) {
@@ -457,11 +460,33 @@ double GridConnector::defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4) 
 		N3.x * defineDeterminant3spc(N1, N2, N4) - N4.x * defineDeterminant3spc(N1, N2, N3);
 }
 
-bool GridConnector::isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr) {
+int GridConnector::isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr) {
 	Node N1 = nodes[tetr.nodesNumbers[0]];
 	Node N2 = nodes[tetr.nodesNumbers[1]];
 	Node N3 = nodes[tetr.nodesNumbers[2]];
 	Node N4 = nodes[tetr.nodesNumbers[3]];
+
+	Node nN1 = defineVector(node, N1);
+	Node nN2 = defineVector(node, N2);
+	Node nN3 = defineVector(node, N3);
+	Node nN4 = defineVector(node, N4);
+	Node N1N2 = defineVector(N1, N2);
+	Node N1N3 = defineVector(N1, N3);
+	Node N1N4 = defineVector(N1, N4);
+
+	double T = abs(defineDeterminant3spc(N1N2, N1N3, N1N4));
+	double A = abs(defineDeterminant3spc(nN1, nN2, nN3)) / T;
+	double B = abs(defineDeterminant3spc(nN1, nN2, nN4)) / T;
+	double C = abs(defineDeterminant3spc(nN1, nN3, nN4)) / T;
+	double D = abs(defineDeterminant3spc(nN2, nN3, nN4)) / T;
+	double zero = abs(1 - A - B - C - D);
+
+	if (A < 0.99999999 && B < 0.99999999 && C < 0.99999999 && D < 0.99999999 && zero < 0.00000001) {
+		return 1;
+	}
+	if (A <= 1 && B <= 1 && C <= 1 && D <= 1 && zero < 0.00000001) {
+		return 0;
+	}
 	//double D0 = defineDeterminant4spc(N1, N2, N3, N4);
 	//double D1 = defineDeterminant4spc(node, N2, N3, N4);
 	//double D2 = defineDeterminant4spc(N1, node, N3, N4);
@@ -470,23 +495,29 @@ bool GridConnector::isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr) {
 
 	//if ((D0 > 0 && D1 > 0 && D2 > 0 && D3 > 0 && D4 > 0) || 
 	//	(D0 < 0 && D1 < 0 && D2 < 0 && D3 < 0 && D4 < 0)) {
-	//	return true;
+	//	return 1;
 	//}
-	definePlaneCoefficients(N1, N3, N2);
-	int one = definePlaneSide(node);
-	definePlaneCoefficients(N1, N2, N4);
-	int two = definePlaneSide(node);
-	definePlaneCoefficients(N1, N4, N3);	
-	int three = definePlaneSide(node);
-	definePlaneCoefficients(N2, N3, N4);	
-	int four = definePlaneSide(node);
+	//if ((D0 > 0 && D1 >= 0 && D2 >= 0 && D3 >= 0 && D4 >= 0) ||
+	//	(D0 < 0 && D1 <= 0 && D2 <= 0 && D3 <= 0 && D4 <= 0)) {
+	//	return 0;
+	//}
 
-	if ((one >= 0 && two >= 0 && three >= 0 && four >= 0) ||
-		(one <= 0 && two <= 0 && three <= 0 && four <= 0)) {
-		return true;
-	}
 
-	return false;
+	//definePlaneCoefficients(N1, N3, N2);
+	//int one = definePlaneSide(node);
+	//definePlaneCoefficients(N1, N2, N4);
+	//int two = definePlaneSide(node);
+	//definePlaneCoefficients(N1, N4, N3);	
+	//int three = definePlaneSide(node);
+	//definePlaneCoefficients(N2, N3, N4);	
+	//int four = definePlaneSide(node);
+
+	//if ((one > 0 && two > 0 && three > 0 && four > 0) ||
+	//	(one < 0 && two < 0 && three < 0 && four < 0)) {
+	//	return 1;
+	//}
+
+	return -1;
 }
 
 void GridConnector::addInternalNodesToTriangulation() {
@@ -495,8 +526,12 @@ void GridConnector::addInternalNodesToTriangulation() {
 	for (int i = 0; i < internalNodes.size(); i++) {
 		list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
 		while (currentTetrahedron != end) {
-			if (isNodeBelongsToTetrahedron(internalNodes[i], *currentTetrahedron)) {
+			int status = isNodeBelongsToTetrahedron(internalNodes[i], *currentTetrahedron);
+			if (status == 1) {
 				cout << "\n" << i << ": XD";
+			}
+			else if (status == 0) {
+				cout << "\n" << i << ": XD------------------";
 			}
 
 			currentTetrahedron++;
@@ -511,7 +546,7 @@ void GridConnector::createTetrahedrons() {
 	omitTetrahedrons();
 	fillEmptyAreas();
 	createConnectionsForAllTetrahedrons();
-	//addInternalNodesToTriangulation();
+	addInternalNodesToTriangulation();
 }
 
 void GridConnector::writeGridInGidFile() {
@@ -566,7 +601,7 @@ void GridConnector::writeGidFile() {
 	file.close();
 }
 
-void GridConnector::writeAneuFile() {
+void GridConnector::writeAneuFile(int defectTetrsNumb) {
 	ofstream file("aneuFileResult.txt");
 
 	int sizeN = nodes.size();
@@ -578,7 +613,7 @@ void GridConnector::writeAneuFile() {
 
 	file << '\n';
 
-	file << tetrahedrons.size() << "4\n";
+	file << tetrahedrons.size() + defectTetrsNumb << " 4\n";
 	list<Tetrahedron>::iterator currentTetrahedron = tetrahedrons.begin();
 	list<Tetrahedron>::iterator end = tetrahedrons.end();
 	while (currentTetrahedron != end) {

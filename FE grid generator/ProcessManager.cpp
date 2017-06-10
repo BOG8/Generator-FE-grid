@@ -53,7 +53,7 @@ void ProcessManager::run() {
 	runGridConnector();
 	//runDeloneRebuilder();
 
-	gridConnector.writeAneuFile();
+	gridConnector.writeAneuFile(ellipsoidGenerator.getTetrahedronsSize());
 	ellipsoidGenerator.writeAneuFile();
 	parallelepipedGenerator.writeAneuFile();
 }
