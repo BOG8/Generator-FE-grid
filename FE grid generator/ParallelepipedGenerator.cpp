@@ -427,10 +427,10 @@ void ParallelepipedGenerator::createInternalGrid() {
 	createConnections();
 }
 
-void ParallelepipedGenerator::writeAneuFile() {
+void ParallelepipedGenerator::writeAneuFile(int defectGridSize) {
 	ofstream file("aneuFileResult.txt", ios_base::app);
 
-	int size = grid0YZ.size() + gridMYZ.size() + grid0XZ.size() + gridMXZ.size() + grid0XY.size() + gridMXY.size();
+	int size = grid0YZ.size() + gridMYZ.size() + grid0XZ.size() + gridMXZ.size() + grid0XY.size() + gridMXY.size() + defectGridSize;
 	file << size << " 3\n";
 
 	for (int i = 0; i < grid0YZ.size(); i++) {

@@ -326,13 +326,18 @@ void GridConnector::omitTetrahedrons() {
 }
 
 void GridConnector::deleteRibsWithoutEmptyAreas(vector<Rib> &vector) {
+	int iter = -1;
 	for (int i = 0; i < vector.size(); i++) {
 		int numberOne = vector[i].neighbours[0]->nodesNumbers[0];
 		int numberTwo = vector[i].neighbours[1]->nodesNumbers[0];
+		iter++;
+		cout << i << ": " << iter;
 		if (numberOne == numberTwo) {
+			cout << "-----";
 			vector.erase(vector.begin() + i);
 			i--;
 		}
+		cout << '\n';
 	}
 }
 
@@ -520,6 +525,17 @@ int GridConnector::isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr) {
 	return -1;
 }
 
+int GridConnector::defineIndexFromDifferentNode(Tetrahedron* tetr, int N1, int N2, int N3, int N4) {
+	for (int i = 0; i < 4; i++) {
+		int nodeNumb = tetr->nodesNumbers[i];
+		if (nodeNumb != N1 && nodeNumb != N2 && nodeNumb != N3 && nodeNumb != N4) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 void GridConnector::addInternalNodesToTriangulation() {
 	list<Tetrahedron>::iterator end = tetrahedrons.end();
 
@@ -529,6 +545,75 @@ void GridConnector::addInternalNodesToTriangulation() {
 			int status = isNodeBelongsToTetrahedron(internalNodes[i], *currentTetrahedron);
 			if (status == 1) {
 				cout << "\n" << i << ": XD";
+				int V1Numb = currentTetrahedron->nodesNumbers[0];
+				int V2Numb = currentTetrahedron->nodesNumbers[1];
+				int V3Numb = currentTetrahedron->nodesNumbers[2];
+				int V4Numb = currentTetrahedron->nodesNumbers[3];
+
+				for (int j = 0; j < 4; j++) {
+					Tetrahedron tetrahedron;
+					tetrahedrons.push_back(tetrahedron);
+				}
+				list<Tetrahedron>::iterator lastTetrs = tetrahedrons.end();
+				vector<Tetrahedron*> newTetrs;
+				for (int j = 0; j < 4; j++) {
+					lastTetrs--;
+					newTetrs.push_back(&(*lastTetrs));
+				}
+
+				for (int j = 0; j < 4; j++) {
+					newTetrs[j]->nodesNumbers.push_back(internalNodes[i].number);
+				}
+				newTetrs[0]->nodesNumbers.push_back(V1Numb);
+				newTetrs[0]->nodesNumbers.push_back(V4Numb);
+				newTetrs[0]->nodesNumbers.push_back(V2Numb);
+				newTetrs[1]->nodesNumbers.push_back(V2Numb);
+				newTetrs[1]->nodesNumbers.push_back(V4Numb);
+				newTetrs[1]->nodesNumbers.push_back(V3Numb);
+				newTetrs[2]->nodesNumbers.push_back(V3Numb);
+				newTetrs[2]->nodesNumbers.push_back(V4Numb);
+				newTetrs[2]->nodesNumbers.push_back(V1Numb);	
+				newTetrs[3]->nodesNumbers.push_back(V1Numb);
+				newTetrs[3]->nodesNumbers.push_back(V2Numb);
+				newTetrs[3]->nodesNumbers.push_back(V3Numb);
+
+				newTetrs[0]->neighbours.push_back(currentTetrahedron->neighbours[2]);
+				if (currentTetrahedron->neighbours[2] != 0) {
+					int newTetrt0Index = defineIndexFromDifferentNode(currentTetrahedron->neighbours[2], internalNodes[i].number, V1Numb, V4Numb, V2Numb);
+					currentTetrahedron->neighbours[2]->neighbours[newTetrt0Index] = newTetrs[0];
+				}
+				newTetrs[0]->neighbours.push_back(newTetrs[1]);
+				newTetrs[0]->neighbours.push_back(newTetrs[3]);
+				newTetrs[0]->neighbours.push_back(newTetrs[2]);
+
+				newTetrs[1]->neighbours.push_back(currentTetrahedron->neighbours[0]);
+				if (currentTetrahedron->neighbours[0] != 0) {
+					int newTetrt1Index = defineIndexFromDifferentNode(currentTetrahedron->neighbours[0], internalNodes[i].number, V2Numb, V4Numb, V3Numb);
+					currentTetrahedron->neighbours[0]->neighbours[newTetrt1Index] = newTetrs[1];
+				}
+				newTetrs[1]->neighbours.push_back(newTetrs[2]);
+				newTetrs[1]->neighbours.push_back(newTetrs[3]);
+				newTetrs[1]->neighbours.push_back(newTetrs[0]);
+
+				newTetrs[2]->neighbours.push_back(currentTetrahedron->neighbours[1]);
+				if (currentTetrahedron->neighbours[1] != 0) {
+					int newTetrt2Index = defineIndexFromDifferentNode(currentTetrahedron->neighbours[1], internalNodes[i].number, V3Numb, V4Numb, V1Numb);
+					currentTetrahedron->neighbours[1]->neighbours[newTetrt2Index] = newTetrs[2];
+				}
+				newTetrs[2]->neighbours.push_back(newTetrs[0]);
+				newTetrs[2]->neighbours.push_back(newTetrs[3]);
+				newTetrs[2]->neighbours.push_back(newTetrs[1]);
+
+				newTetrs[3]->neighbours.push_back(currentTetrahedron->neighbours[3]);
+				if (currentTetrahedron->neighbours[3] != 0) {
+					int newTetrt3Index = defineIndexFromDifferentNode(currentTetrahedron->neighbours[3], internalNodes[i].number, V1Numb, V2Numb, V3Numb);
+					currentTetrahedron->neighbours[3]->neighbours[newTetrt3Index] = newTetrs[3];
+				}
+				newTetrs[3]->neighbours.push_back(newTetrs[1]);
+				newTetrs[3]->neighbours.push_back(newTetrs[2]);
+				newTetrs[3]->neighbours.push_back(newTetrs[3]);
+
+				break;
 			}
 			else if (status == 0) {
 				cout << "\n" << i << ": XD------------------";
@@ -629,10 +714,28 @@ void GridConnector::writeAneuFile(int defectTetrsNumb) {
 	file.close();
 }
 
+void GridConnector::writeAneuGridFile() {
+	ofstream file("aneuFileResult.txt", ios_base::app);
+
+	for (int i = 1; i < internalGrid.size(); i++) {
+		file << '4';
+		for (int j = 0; j < 3; j++) {
+			file << ' ' << internalGrid[i].nodesNumbers[j];
+		}
+		file << '\n';
+	}
+
+	file.close();
+}
+
 vector<Node> GridConnector::getNodes() {
 	return nodes;
 }
 
 list<Tetrahedron>* GridConnector::getTetrahedrons() {
 	return &tetrahedrons;
+}
+
+int GridConnector::getInternalGridSize() {
+	return internalGrid.size() - 1;
 }

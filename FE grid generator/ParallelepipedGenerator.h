@@ -35,7 +35,7 @@ public:
 	void transferAllNodes();
 	void transferInternalNodes();
 	void createInternalGrid();
-	void writeAneuFile();
+	void writeAneuFile(int defectGridSize);
 
 	vector<Node> getNodes();
 	vector<Node> getInternalNodes();

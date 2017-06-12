@@ -28,6 +28,8 @@ public:
 	vector<Node> getNodes();
 	list<Tetrahedron>* getTetrahedrons();
 	void writeAneuFile(int defectTetrsNumb);
+	void writeAneuGridFile();
+	int getInternalGridSize();
 
 private:
 	void addEmptyTetrahedrons();
@@ -63,5 +65,6 @@ private:
 	double defineDeterminant3spc(Node N1, Node N2, Node N3);
 	double defineDeterminant4spc(Node N1, Node N2, Node N3, Node N4);
 	int isNodeBelongsToTetrahedron(Node node, Tetrahedron tetr);
+	int defineIndexFromDifferentNode(Tetrahedron* tetr, int N1, int N2, int N3, int N4);
 	void addInternalNodesToTriangulation();
 };

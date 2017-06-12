@@ -55,5 +55,6 @@ void ProcessManager::run() {
 
 	gridConnector.writeAneuFile(ellipsoidGenerator.getTetrahedronsSize());
 	ellipsoidGenerator.writeAneuFile();
-	parallelepipedGenerator.writeAneuFile();
+	parallelepipedGenerator.writeAneuFile(gridConnector.getInternalGridSize());
+	gridConnector.writeAneuGridFile();
 }
